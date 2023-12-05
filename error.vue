@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {defineComponent, h} from 'vue'
 import type {ResponseTopic} from "~/interface";
-import * as pkg from "lodash";
+import pkg from "lodash";
 
 const {debounce} = pkg
 

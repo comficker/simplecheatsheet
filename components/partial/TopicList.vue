@@ -85,41 +85,43 @@ useSeoMeta({
 </script>
 
 <template>
-  <div v-if="response.instance" class="inline-flex lg:max-w-1/2">
-    <div class="p-4 bg-gradient-to-r from-indigo-50">
-      <div class="flex gap-4">
-        <img
-          class="w-16" v-if="response.instance.media"
-          :src="config.public.apiBase + response.instance.media.sizes.thumb_128"
-          :alt="response.instance.name"
-        >
-        <div class="flex-none">
-          <h1 class="font-semibold text-4xl">{{ response.instance.name }} CheatSheets</h1>
-          <p>{{ response.instance.desc }}</p>
+  <div>
+    <div v-if="response.instance" class="inline-flex lg:max-w-1/2">
+      <div class="p-4 bg-gradient-to-r from-indigo-50">
+        <div class="flex gap-4">
+          <img
+            class="w-16" v-if="response.instance.media"
+            :src="config.public.apiBase + response.instance.media.sizes.thumb_128"
+            :alt="response.instance.name"
+          >
+          <div class="flex-none">
+            <h1 class="font-semibold text-4xl">{{ response.instance.name }} CheatSheets</h1>
+            <p>{{ response.instance.desc }}</p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="grid p-4 gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 text-sm">
-    <nuxt-link
-      v-for="item in response.results" :key="item.id_string"
-      :to="`/${item.id_string}`"
-      class="flex gap-3 shadow bg-white p-3"
-    >
-      <div v-if="item.media" class="flex-none">
-        <img
-          class="w-16"
-          :src="config.public.apiBase + item.media.sizes.thumb_128"
-          :alt="item.name"
-        >
-      </div>
-      <div class="flex-1">
-        <div class="text-base font-bold">{{ item.name }}</div>
-        <div>
-          <p>{{ item.desc }}</p>
+    <div class="grid p-4 gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 text-sm">
+      <nuxt-link
+        v-for="item in response.results" :key="item.id_string"
+        :to="`/${item.id_string}`"
+        class="flex gap-3 shadow bg-white p-3"
+      >
+        <div v-if="item.media" class="flex-none">
+          <img
+            class="w-16"
+            :src="config.public.apiBase + item.media.sizes.thumb_128"
+            :alt="item.name"
+          >
         </div>
-      </div>
-    </nuxt-link>
+        <div class="flex-1">
+          <div class="text-base font-bold">{{ item.name }}</div>
+          <div>
+            <p>{{ item.desc }}</p>
+          </div>
+        </div>
+      </nuxt-link>
+    </div>
   </div>
 </template>
 

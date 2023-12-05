@@ -147,7 +147,7 @@ import {
 import {
   XMarkIcon, Bars3Icon, MagnifyingGlassIcon
 } from '@heroicons/vue/24/outline'
-import * as pkg from "lodash";
+import pkg from "lodash";
 
 const {debounce} = pkg
 const sidebarOpen = ref(false)
