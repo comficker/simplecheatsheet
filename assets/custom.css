@@ -1,0 +1,35 @@
+body {
+  font-family: 'Karla', sans-serif;
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color:  rgba(255, 255, 255, 0);
+}
+
+html {
+  overscroll-behavior: none;
+}
+
+input[type="color"] {
+  -webkit-appearance: none;
+  border: none;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+input[type="color"]::-webkit-color-swatch {
+  border: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
+html {
+  scroll-behavior: smooth;
+}
