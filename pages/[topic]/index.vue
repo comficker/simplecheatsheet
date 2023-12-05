@@ -115,13 +115,15 @@ useSeoMeta({
     <div class="inline-flex lg:max-w-1/2">
       <div class="-ml-4 p-4 bg-gradient-to-r from-indigo-50">
         <div class="flex gap-4">
-          <img
-            class="w-16" v-if="response.instance.media"
-            :src="config.public.apiBase + response.instance.media.sizes.thumb_128"
-            :alt="response.instance.name"
-          >
-          <div class="flex-none">
-            <h1 class="font-semibold text-4xl">{{ response.instance.name }} CheatSheets</h1>
+          <div v-if="response.instance.media" class="flex-none">
+            <img
+              class="w-16"
+              :src="config.public.apiBase + response.instance.media.sizes.thumb_128"
+              :alt="response.instance.name"
+            >
+          </div>
+          <div class="flex-1">
+            <h1 class="font-semibold text-2xl md:text-4xl">{{ response.instance.name }} CheatSheets</h1>
             <p class="">{{ response.instance.desc }}</p>
           </div>
         </div>
@@ -141,7 +143,7 @@ useSeoMeta({
           </div>
         </div>
       </div>
-      <div class="md:w-1/4 lg:w-1/5 bg-white space-y-4 text-sm">
+      <div class="md:w-1/4 lg:w-1/5 bg-white space-y-4 text-sm py-4">
         <div class="sticky top-32 right-0">
           <h4 class="text-base font-bold">Table of contents</h4>
           <ul class="divide-y divide-dashed space-y-2">

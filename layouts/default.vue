@@ -43,8 +43,10 @@
                             :to="`/category/${item.id_string}`"
                             :class="[item.current ? 'bg-gray-50 text-indigo-600' : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold']"
                           >
-                            <img v-if="item.media" :src="config.public.apiBase + item.media.sizes.thumb_24" :alt="item.name" class="w-4">
-                            <span>{{ item.name }}</span>
+                            <div v-if="item.media" class="flex-none">
+                              <img :src="config.public.apiBase + item.media.sizes.thumb_24" :alt="item.name" class="w-4">
+                            </div>
+                            <span class="flex-1">{{ item.name }}</span>
                           </nuxt-link>
                         </li>
                       </ul>
@@ -74,8 +76,10 @@
                     :to="`/category/${item.id_string}`"
                     :class="[item.current ? 'bg-gray-50 text-indigo-600' : 'hover:text-indigo-600 hover:bg-gray-50', 'group flex gap-2 p-2']"
                   >
-                    <img v-if="item.media" :src="config.public.apiBase + item.media.sizes.thumb_24" :alt="item.name" class="w-4">
-                    <span>{{ item.name }}</span>
+                    <div v-if="item.media" class="flex-none">
+                      <img :src="config.public.apiBase + item.media.sizes.thumb_24" :alt="item.name" class="w-4">
+                    </div>
+                    <span class="flex-1">{{ item.name }}</span>
                   </nuxt-link>
                 </li>
               </ul>
