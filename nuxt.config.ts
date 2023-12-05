@@ -11,7 +11,7 @@ export default defineNuxtConfig({
     'nuxt-lazy-load',
     '@nuxtjs/partytown',
   ],
-
+  // @ts-ignore
   experimental: {
     payloadExtraction: false,
     inlineSSRStyles: false,
@@ -90,9 +90,7 @@ export default defineNuxtConfig({
     audios: true,
     iframes: true,
     native: false,
-    directiveOnly: false,
-    //@ts-ignore
-    defaultImage: '/loading.svg',
+    directiveOnly: false
   },
 
   sourcemap: {
