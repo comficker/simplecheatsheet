@@ -118,7 +118,8 @@
                   :to="`/${item.id_string}`"
                   class="flex-none block p-3 py-1.5 rounded-[2px] flex gap-2 items-center"
                 >
-                  <img class="w-4" v-if="item.media" :src="config.public.apiBase + item.media.sizes.thumb_24" :alt="item.name">
+                  <img class="w-4" v-if="item.media" :src="config.public.apiBase + item.media.sizes.thumb_24"
+                       :alt="item.name">
                   <div class="text-sm">{{ item.name }}</div>
                 </nuxt-link>
               </div>
@@ -146,8 +147,9 @@ import {
 import {
   XMarkIcon, Bars3Icon, MagnifyingGlassIcon
 } from '@heroicons/vue/24/outline'
-import {debounce} from "lodash";
+import * as pkg from "lodash";
 
+const {debounce} = pkg
 const sidebarOpen = ref(false)
 const search = ref('')
 const doSearch = ref(false)
