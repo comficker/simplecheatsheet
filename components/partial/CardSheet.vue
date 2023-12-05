@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type {Post} from "~/interface";
-import * as showdown from "showdown"
+import showdown from "showdown"
 
 const {sheet, contentOnly} = defineProps<{ sheet: Post, contentOnly?: boolean }>()
 
