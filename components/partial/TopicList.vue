@@ -14,20 +14,17 @@ const {data: response} = await useAuthFetch<ResponseTopic>('/cs/topics/', {
   key: route.params.id_string?.toString() || 'list'
 })
 
-useHead({
-  title: response.value?.instance ? `${response.value?.instance?.name} Cheatsheets` : constants.appName
-})
+const meta = computed(() => ({
+  title: response.value?.instance ?
+    `${capitalizeFirstLetter(response.value?.instance?.type)}: ${response.value?.instance?.name.replace("Cheat Sheet", "")} Cheatsheets` : constants.appName,
+  desc: response.value?.instance?.desc || constants.appDescription
+}))
 
 us.setBC(response.value?.instance ? [{
   name: response.value?.instance?.name,
   current: true,
   href: `/category/${response.value?.instance?.id_string}`
 }] : [])
-
-const meta = computed(() => ({
-  title: response.value?.instance ? `${response.value?.instance?.name} Cheatsheets` : constants.appName,
-  desc: response.value?.instance?.desc || constants.appDescription
-}))
 
 useHead({
   title: meta.value.title,
@@ -82,6 +79,10 @@ useSeoMeta({
   ogImage: '/default.png',
   twitterCard: 'summary_large_image',
 })
+
+function capitalizeFirstLetter(string: string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
 </script>
 
 <template>
@@ -97,7 +98,7 @@ useSeoMeta({
             >
           </div>
           <div class="flex-1">
-            <h1 class="font-semibold text-2xl md:text-4xl">{{ response.instance.name }} CheatSheets</h1>
+            <h1 class="font-semibold text-2xl md:text-4xl">{{ meta.title }}</h1>
             <p>{{ response.instance.desc }}</p>
           </div>
         </div>

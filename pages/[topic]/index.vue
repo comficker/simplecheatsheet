@@ -56,7 +56,7 @@ us.setBC(response.value?.instance ? [{
 }] : [])
 
 useHead({
-  title: `${response.value?.instance.name} Cheatsheet`,
+  title: `${response.value?.instance.name} Cheatsheets`,
   meta: [
     {name: 'description', content: response.value?.instance.desc}
   ],
@@ -101,25 +101,14 @@ useHead({
       type: "application/ld+json",
       innerHTML: JSON.stringify({
         "@context": "https://schema.org/",
-        "@type": "AggregateRating",
-        "itemReviewed": {
-          "@type": "Restaurant",
-          "image": "https://www.example.com/seafood-restaurant.jpg",
-          "name": response.value?.instance.name,
-          "servesCuisine": "Seafood",
-          "telephone": "1234567",
-          "address" : {
-            "@type": "PostalAddress",
-            "streetAddress": "123 William St",
-            "addressLocality": "New York",
-            "addressRegion": "NY",
-            "postalCode": "10038",
-            "addressCountry": "US"
-          }
-        },
-        "ratingValue": "88",
-        "bestRating": "100",
-        "ratingCount": "20"
+        "@type": "Book",
+        "name": `${response.value?.instance.name} Cheatsheet`,
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "88",
+          "bestRating": "100",
+          "ratingCount": "20"
+        }
       })
     }
   ]
@@ -137,29 +126,38 @@ useSeoMeta({
 
 <template>
   <div class="px-4 space-y-4">
-    <div class="inline-flex lg:max-w-1/2">
-      <div class="-ml-4 p-4 bg-gradient-to-r from-indigo-50">
-        <div class="flex gap-4">
-          <div v-if="response.instance.media" class="flex-none">
-            <img
-              class="w-16"
-              :src="config.public.apiBase + response.instance.media.sizes.thumb_128"
-              :alt="response.instance.name"
-            >
-          </div>
-          <div class="flex-1">
-            <h1 class="font-semibold text-2xl md:text-4xl">{{ response.instance.name }} CheatSheets</h1>
-            <p>{{ response.instance.desc }}</p>
-            <div class="flex flex-wrap -mx-0.5">
-              <div v-for="item in response.instance.taxonomies" :key="item.id" class="p-1">
-                <nuxt-link
-                  class="p-0.5 px-2 rounded bg-gradient-to-r from-green-200"
-                  :to="`/${item.type}/${item.id_string}`"
-                >{{item.name}}</nuxt-link>
+    <div class="relative">
+      <div class="inline-flex lg:max-w-1/2">
+        <div class="-ml-4 p-4 bg-gradient-to-r from-indigo-50">
+          <div class="flex gap-4">
+            <div v-if="response.instance.media" class="flex-none">
+              <img
+                class="w-16"
+                :src="config.public.apiBase + response.instance.media.sizes.thumb_128"
+                :alt="response.instance.name"
+              >
+            </div>
+            <div class="flex-1">
+              <h1 class="font-semibold text-2xl md:text-4xl">{{ response.instance.name }} CheatSheets</h1>
+              <p>{{ response.instance.desc }}</p>
+              <div class="flex flex-wrap -mx-0.5">
+                <div v-for="item in response.instance.taxonomies" :key="item.id" class="p-1">
+                  <nuxt-link
+                    class="p-0.5 px-2 rounded bg-gradient-to-r from-green-200"
+                    :to="`/${item.type}/${item.id_string}`"
+                  >{{item.name}}</nuxt-link>
+                </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
+      <div class="absolute right-6 top-6">
+        <nuxt-link
+          :to="`/submit?id=${response.instance.id_string}`"
+          class="block cursor-pointer p-2 border border-gray-100 rounded">
+          <div class="w-4 h-4 i-con-pen"/>
+        </nuxt-link>
       </div>
     </div>
     <div class="flex flex-col md:flex-row gap-6">
