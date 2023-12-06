@@ -137,7 +137,7 @@ useSeoMeta({
           </h2>
           <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
             <partial-card-sheet v-if="sections[i].text" class="mb-4" content-only :sheet="sections[i]"/>
-            <div v-for="chunk in posts">
+            <div class="w-full overflow-hidden" v-for="chunk in posts">
               <partial-card-sheet class="mb-4" v-for="item in chunk" :key="item.id" :sheet="item"/>
             </div>
           </div>
