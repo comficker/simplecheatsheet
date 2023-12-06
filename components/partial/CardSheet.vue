@@ -26,12 +26,8 @@ const html = computed(() => {
 
 <style>
 .sheet {
-  @apply text-sm overflow-auto p-3 border-gray-100 bg-green-50/70;
-
-  --tw-ring-shadow: 0 0 #0000;
-  --tw-shadow: 0 6px 8px rgba(102, 119, 136, 0.03), 0 1px 2px rgba(102, 119, 136, 0.3);
-  --tw-shadow-colored: 0 6px 8px var(--tw-shadow-color), 0 1px 2px var(--tw-shadow-color);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  @apply text-sm overflow-auto p-3 border border-gray-100 bg-green-50/70;
+  border-radius: 4px;
 }
 
 .sheet .content {

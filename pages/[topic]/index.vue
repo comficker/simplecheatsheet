@@ -105,7 +105,7 @@ useHead({
         "itemReviewed": {
           "@type": "Restaurant",
           "image": "https://www.example.com/seafood-restaurant.jpg",
-          "name": "Legal Seafood",
+          "name": response.value?.instance.name,
           "servesCuisine": "Seafood",
           "telephone": "1234567",
           "address" : {
@@ -149,7 +149,15 @@ useSeoMeta({
           </div>
           <div class="flex-1">
             <h1 class="font-semibold text-2xl md:text-4xl">{{ response.instance.name }} CheatSheets</h1>
-            <p class="">{{ response.instance.desc }}</p>
+            <p class="text-sm md:text-base">{{ response.instance.desc }}</p>
+            <div class="flex flex-wrap -mx-0.5">
+              <div v-for="item in response.instance.taxonomies" :key="item.id" class="p-1">
+                <nuxt-link
+                  class="p-0.5 px-2 rounded bg-gradient-to-r from-green-200"
+                  :to="`/${item.type}/${item.id_string}`"
+                >{{item.name}}</nuxt-link>
+              </div>
+            </div>
           </div>
         </div>
       </div>
