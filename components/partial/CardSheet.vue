@@ -26,7 +26,7 @@ const html = computed(() => {
 
 <style>
 .sheet {
-  @apply text-sm overflow-auto p-3 border border-gray-100 bg-green-50/70;
+  @apply overflow-auto p-3 border border-gray-100 bg-green-50/70;
   border-radius: 4px;
 }
 

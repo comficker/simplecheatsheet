@@ -103,7 +103,7 @@ useSeoMeta({
         </div>
       </div>
     </div>
-    <div class="grid p-4 gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 text-sm">
+    <div class="grid p-4 gap-4 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
       <nuxt-link
         v-for="item in response.results" :key="item.id_string"
         :to="`/${item.id_string}`"
@@ -118,7 +118,7 @@ useSeoMeta({
         </div>
         <div class="flex-1">
           <div class="text-base font-bold">{{ item.name }}</div>
-          <div>
+          <div class="line-clamp-3">
             <p>{{ item.desc }}</p>
           </div>
         </div>

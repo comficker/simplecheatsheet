@@ -41,10 +41,11 @@
                         <li v-for="item in category.results" :key="item.name">
                           <nuxt-link
                             :to="`/category/${item.id_string}`"
-                            :class="[item.current ? 'bg-gray-50 text-indigo-600' : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold']"
+                            :class="[item.current ? 'bg-gray-50 text-indigo-600' : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50', 'group flex gap-x-3 rounded-md p-2 leading-6 font-semibold']"
                           >
                             <div v-if="item.media" class="flex-none">
-                              <img :src="config.public.apiBase + item.media.sizes.thumb_24" :alt="item.name" class="w-4">
+                              <img :src="config.public.apiBase + item.media.sizes.thumb_24" :alt="item.name"
+                                   class="w-4">
                             </div>
                             <span class="flex-1">{{ item.name }}</span>
                           </nuxt-link>
@@ -70,7 +71,7 @@
         <nav class="p-4 flex flex-1 flex-col">
           <ul role="list" class="flex flex-1 flex-col gap-y-4">
             <li>
-              <ul role="list" class="-mx-2 space-y-1 text-sm font-medium">
+              <ul role="list" class="-mx-2 space-y-1 font-medium">
                 <li v-for="item in category.results" :key="item.name">
                   <nuxt-link
                     :to="`/category/${item.id_string}`"
@@ -100,7 +101,7 @@
         <partial-header/>
       </div>
       <main>
-        <div class="sticky top-12 left-0 bg-white w-full text-xs border-b border-gray-100">
+        <div class="sticky top-12 left-0 bg-white w-full border-b border-gray-100">
           <div class="flex flex-nowrap items-center gap-3 font-medium">
             <div class="max-w-44">
               <form class="relative bg-white p-4">
@@ -111,7 +112,7 @@
                 <input
                   v-model="search"
                   id="search-field"
-                  class="block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm"
+                  class="block h-full w-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0"
                   placeholder="Search..." type="search" name="search"
                 />
               </form>
@@ -123,9 +124,10 @@
                   :to="`/${item.id_string}`"
                   class="flex-none block p-3 py-1.5 rounded-[2px] flex gap-2 items-center"
                 >
-                  <img class="w-4" v-if="item.media" :src="config.public.apiBase + item.media.sizes.thumb_24"
-                       :alt="item.name">
-                  <div class="text-sm">{{ item.name }}</div>
+                  <img
+                    class="w-4" v-if="item.media" :src="config.public.apiBase + item.media.sizes.thumb_24"
+                    :alt="item.name">
+                  <div>{{ item.name }}</div>
                 </nuxt-link>
               </div>
             </div>

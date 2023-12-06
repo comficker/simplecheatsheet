@@ -149,7 +149,7 @@ useSeoMeta({
           </div>
           <div class="flex-1">
             <h1 class="font-semibold text-2xl md:text-4xl">{{ response.instance.name }} CheatSheets</h1>
-            <p class="text-sm md:text-base">{{ response.instance.desc }}</p>
+            <p>{{ response.instance.desc }}</p>
             <div class="flex flex-wrap -mx-0.5">
               <div v-for="item in response.instance.taxonomies" :key="item.id" class="p-1">
                 <nuxt-link
@@ -176,7 +176,7 @@ useSeoMeta({
           </div>
         </div>
       </div>
-      <div class="md:w-1/4 lg:w-1/5 bg-white space-y-4 text-sm py-4">
+      <div class="md:w-1/4 lg:w-1/5 bg-white space-y-4 py-4">
         <div class="sticky top-32 right-0">
           <h4 class="text-base font-bold">Table of contents</h4>
           <ul class="divide-y divide-dashed space-y-2">
