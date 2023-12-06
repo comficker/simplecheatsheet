@@ -42,8 +42,7 @@ export default defineNuxtConfig({
       titleTemplate: '%s - simplecheatsheet.com',
       link: [
         { rel: 'icon', href: '/favicon.png', sizes: 'any' },
-        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
-        { rel: 'apple-touch-icon', href: '/images.png' },
+        { rel: 'apple-touch-icon', href: '/images/icon-512.jpg' },
         {
           href: 'https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600&display=swap',
           rel: 'stylesheet'

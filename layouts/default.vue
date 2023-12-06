@@ -30,7 +30,7 @@
               <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4">
                 <nuxt-link to="/" class="flex h-16 shrink-0 items-center">
                   <img
-                    class="h-8 w-auto" src="/logo.png"
+                    class="w-3/4" src="/logo.png"
                     alt="Simple Cheat Sheet"
                   />
                 </nuxt-link>
@@ -63,7 +63,7 @@
       <div class="flex grow flex-col border-r border-gray-100 overflow-y-auto bg-white">
         <nuxt-link to="/" class="px-4 flex h-12 border-b border-gray-100 shrink-0 items-center">
           <img
-            class="h-6 w-auto" src="/logo.png"
+            class="w-full" src="/logo.png"
             alt="Simple CheatSheet"
           />
         </nuxt-link>
@@ -159,6 +159,7 @@ const sidebarOpen = ref(false)
 const search = ref('')
 const doSearch = ref(false)
 const config = useRuntimeConfig()
+const route = useRoute()
 
 const [{data: category}, {data: response}] = await Promise.all([
   useAuthFetch<ResponseTaxonomy>('/cs/taxonomies/?type=category'),
@@ -175,4 +176,8 @@ const [{data: category}, {data: response}] = await Promise.all([
 watch(search, debounce(() => {
   doSearch.value = !doSearch.value
 }, 800))
+
+watch(() => route.path, () => {
+  sidebarOpen.value = false
+})
 </script>
