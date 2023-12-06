@@ -68,12 +68,14 @@ watch(search, debounce(() => {
 <template>
   <div class="bg-white h-screen flex flex-col">
     <main class="flex-1 mx-auto w-full max-w-7xl px-6 pb-16 pt-10 sm:pb-24 lg:px-8">
-      <img
-        class="mx-auto h-8 w-auto" src="/logo.png"
-        alt=""
-      />
-      <div class="mx-auto mt-20 max-w-2xl text-center sm:mt-24">
-        <p class="font-bold text-8xl italic text-gray-400">404</p>
+      <nuxt-link to="/">
+        <img
+          class="mx-auto h-6 w-auto" src="/logo.png"
+          alt=""
+        />
+      </nuxt-link>
+      <div class="mx-auto mt-10 max-w-2xl text-center sm:mt-24">
+        <p class="font-bold text-8xl">404</p>
         <p class="mt-4 text-base leading-7 text-gray-600 sm:mt-6 sm:text-lg sm:leading-8">Sorry, we could’t find the
           page you’re looking for.
         </p>
