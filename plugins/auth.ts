@@ -1,5 +1,4 @@
 import {useUserStore} from "~/stores/user";
-import {useCookie} from "#app";
 import {User} from "~/interface";
 import {ofetch} from "ofetch";
 import useStatefulCookie from "~/composables/useStatefulCookie";

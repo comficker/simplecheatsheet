@@ -3,7 +3,7 @@ import {defineComponent, h} from 'vue'
 import type {ResponseTopic} from "~/interface";
 import pkg from "lodash";
 
-const {debounce} = pkg
+const {debounce} = pkg;
 
 const props = defineProps<{
   error: {

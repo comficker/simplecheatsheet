@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {PhotoIcon} from '@heroicons/vue/24/solid'
-import type {Topic} from "~/interface";
-import {useRouter} from "#app";
+import type {Topic, Post} from "~/interface";
+import type {ResponsePost} from "~/interface";
 
 const route = useRoute()
 const form = ref<{
@@ -19,16 +19,31 @@ const form = ref<{
   tags: [],
   media: null
 })
+const posts = ref<Post[]>([])
 
 if (route.query.id) {
-  const {data: response} = await useAuthFetch<Topic>(`/cs/topics/${route.query.id}/`);
+  const {data: response} = await useAuthFetch<ResponsePost>(`/cs/posts/`, {
+    params: {
+      "topic__id_string": route.query.id,
+      "page_size": 1000
+    }
+  }).catch(() => {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Page Not Found'
+    })
+  })
   if (response.value) {
-    form.value.id = response.value.id
-    form.value.id_string = response.value.id_string
-    form.value.name = response.value.name
-    form.value.desc = response.value.desc
-    form.value.tags = response.value.taxonomies.map(x => x.name)
-    form.value.media = response.value.media ? response.value.media.path : null
+    form.value.id = response.value.instance.id
+    form.value.id_string = response.value.instance.id_string
+    form.value.name = response.value.instance.name
+    form.value.desc = response.value.instance.desc
+    form.value.tags = response.value.instance.taxonomies.map(x => x.name)
+    form.value.media = response.value.instance.media ? response.value.instance.media.path : null
+    posts.value = response.value.results.filter((x: Post) => !x.parent).map(x => ({
+      ...x,
+      children: response.value?.results.filter((y: Post) => y.parent == x.id)
+    }))
   }
 }
 
@@ -63,6 +78,20 @@ const openFile = function (file) {
   };
   reader.readAsDataURL(input.files[0]);
 };
+
+useHead({
+  script: [
+    {src: 'https://cdn.ckeditor.com/ckeditor5/40.1.0/classic/ckeditor.js', async: true}
+  ],
+})
+
+const deletePost = (post: Post) => {
+
+}
+
+const addPost = (parent: Post | null) => {
+
+}
 </script>
 
 <template>
@@ -156,8 +185,49 @@ const openFile = function (file) {
           </div>
         </div>
       </div>
+      <div class="mt-6 space-y-3">
+        <div class="block font-medium leading-6 text-gray-900 flex gap-3">
+          <span>Sheets</span>
+          <i class="text-red-400">Auto save is on!</i>
+        </div>
+        <div v-for="(item, i) in posts" :key="`p_${i}`" class="space-y-2">
+          <div class="group flex gap-2 items-center cursor-pointer" @click="item.expanded = !item.expanded">
+            <div :class="[item.expanded ? 'i-con-chevron-down': 'i-con-chevron-right', 'w-4 h-4']"/>
+            <span>{{ item.name }}</span>
+            <div class="hidden group-hover:block w-4 h-5 text-red-500 duration-300 i-con-delete" @click="deletePost(item)"/>
+          </div>
+          <div v-if="item.expanded" class="space-y-2 ml-6">
+            <client-only>
+              <partial-editor :post="item"/>
+            </client-only>
+            <div
+              v-for="(child, j) in item.children" :key="`c_${j}`"
+              class="space-y-2"
+            >
+              <div class="group flex gap-2 items-center cursor-pointer" @click="child.expanded = !child.expanded">
+                <div :class="[child.expanded ? 'i-con-chevron-down': 'i-con-chevron-right', 'w-4 h-4']"/>
+                <span>{{ child.name }}</span>
+                <div class="hidden group-hover:block w-4 h-5 text-red-500 duration-300 i-con-delete" @click="deletePost(child)"/>
+              </div>
+              <div v-if="child.expanded">
+                <client-only>
+                  <partial-editor :post="child"/>
+                </client-only>
+              </div>
+            </div>
+            <div class="group inline-flex rounded gap-2 items-center cursor-pointer font-semibold border p-1 px-3" @click="addPost(item)">
+              <div class="w-4 h-4 i-con-plus"/>
+              <span>Add child</span>
+            </div>
+          </div>
+        </div>
+        <div class="group inline-flex rounded gap-2 items-center cursor-pointer font-semibold border p-1 px-3" @click="addPost(null)">
+          <div class="w-4 h-4 i-con-plus"/>
+          <span>Add sheet</span>
+        </div>
+      </div>
     </div>
-    <div class="py-3 bg-white mt-6 flex items-center justify-end gap-x-6">
+    <div class="sticky bottom-0 py-3 bg-white mt-6 flex items-center justify-end gap-x-6">
       <button
         type="submit"
         class="rounded-md bg-indigo-600 px-6 py-2 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"

@@ -54,8 +54,10 @@ export interface Topic {
 }
 
 export interface Taxonomy {
+  type: string
   id_string: string
   name: string
+  updated: string
 }
 
 export interface ResponseTopic {
@@ -94,6 +96,8 @@ export interface Post {
   contrib: any
   topic: number
   user: number
+  children?: Post[]
+  expanded?: boolean
 }
 
 export interface ResponsePost {
