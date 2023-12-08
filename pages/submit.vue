@@ -61,13 +61,8 @@ const submit = async (e: Event) => {
     method: "POST",
     body: JSON.parse(JSON.stringify(form.value))
   });
-  if (!form.value.id) {
-    form.value.name = ""
-    form.value.id_string = ""
-    form.value.desc = ""
-    form.value.media = null
-    form.value.tags = []
-  }
+  if (response.value)
+    form.value.id = response.value.id
 }
 
 const openFile = function (file) {
@@ -90,7 +85,20 @@ const deletePost = (post: Post) => {
 }
 
 const addPost = (parent: Post | null) => {
-
+  const n = {
+    name: '',
+    desc: '',
+    text: '',
+    parent: parent ? parent.id : null,
+    topic: form.value.id,
+    children: [],
+    expanded: false
+  } as unknown as Post
+  if (parent) {
+    parent.children?.push(n)
+  } else {
+    posts.value.push(n)
+  }
 }
 </script>
 
@@ -185,15 +193,17 @@ const addPost = (parent: Post | null) => {
           </div>
         </div>
       </div>
-      <div class="mt-6 space-y-3">
+      <div v-if="form.id" class="mt-6 space-y-3">
         <div class="block font-medium leading-6 text-gray-900 flex gap-3">
           <span>Sheets</span>
           <i class="text-red-400">Auto save is on!</i>
         </div>
         <div v-for="(item, i) in posts" :key="`p_${i}`" class="space-y-2">
-          <div class="group flex gap-2 items-center cursor-pointer" @click="item.expanded = !item.expanded">
-            <div :class="[item.expanded ? 'i-con-chevron-down': 'i-con-chevron-right', 'w-4 h-4']"/>
-            <span>{{ item.name }}</span>
+          <div class="group flex gap-2 items-center cursor-pointer">
+            <div :class="[item.expanded ? 'i-con-chevron-down': 'i-con-chevron-right', 'w-4 h-4']" @click="item.expanded = !item.expanded"/>
+            <div class="h-6 min-w-16">
+              <input type="text" class="border-0 p-0" v-model="item.name">
+            </div>
             <div class="hidden group-hover:block w-4 h-5 text-red-500 duration-300 i-con-delete" @click="deletePost(item)"/>
           </div>
           <div v-if="item.expanded" class="space-y-2 ml-6">
@@ -204,9 +214,11 @@ const addPost = (parent: Post | null) => {
               v-for="(child, j) in item.children" :key="`c_${j}`"
               class="space-y-2"
             >
-              <div class="group flex gap-2 items-center cursor-pointer" @click="child.expanded = !child.expanded">
-                <div :class="[child.expanded ? 'i-con-chevron-down': 'i-con-chevron-right', 'w-4 h-4']"/>
-                <span>{{ child.name }}</span>
+              <div class="group flex gap-2 items-center cursor-pointer">
+                <div :class="[child.expanded ? 'i-con-chevron-down': 'i-con-chevron-right', 'w-4 h-4']" @click="child.expanded = !child.expanded"/>
+                <div class="h-6 min-w-16">
+                  <input type="text" class="border-0 p-0 focus:outline-none" v-model="child.name">
+                </div>
                 <div class="hidden group-hover:block w-4 h-5 text-red-500 duration-300 i-con-delete" @click="deletePost(child)"/>
               </div>
               <div v-if="child.expanded">

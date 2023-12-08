@@ -83,17 +83,17 @@ export interface ResponseTaxonomy {
 
 
 export interface Post {
-  id: number
-  meta: any
-  updated: string
-  created: string
-  db_status: number
+  id?: number
+  meta?: any
+  updated?: string
+  created?: string
+  db_status?: number
   name: string
   id_string: string
   desc: any
   text: string
   parent: number
-  contrib: any
+  contrib?: any
   topic: number
   user: number
   children?: Post[]
