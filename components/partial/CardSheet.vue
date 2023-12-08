@@ -8,9 +8,10 @@ const converter = new showdown.Converter()
 converter.setOption('tables', true);
 
 const html = computed(() => {
-  let text = sheet.text.replace(/\n{2,}/g, m => m.replace(/\n/g, "<br/>"));
-  text = text.replace(/<br\/>([^<])/g, "<br\/>\n\n$1");
-  text = text.replace(/^\s+|\s+$/g, '')
+  let text = sheet.text
+  //   .replace(/\n{2,}/g, m => m.replace(/\n/g, "<br/>"));
+  // text = text.replace(/<br\/>([^<])/g, "<br\/>\n\n$1");
+  // text = text.replace(/^\s+|\s+$/g, '')
   return converter.makeHtml(text)
 })
 </script>
