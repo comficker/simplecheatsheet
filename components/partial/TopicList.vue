@@ -6,12 +6,16 @@ import * as constants from "~/constants";
 const route = useRoute()
 const us = useUserStore()
 const config = useRuntimeConfig()
+const params = computed(() => ({
+  page_size: 100,
+  'taxonomies__id_string': route.params.id_string,
+  db_status__in: us.topicStatus.join(",")
+}))
+
 const {data: response} = await useAuthFetch<ResponseTopic>('/cs/topics/', {
-  params: {
-    page_size: 500,
-    'taxonomies__id_string': route.params.id_string
-  },
-  key: route.params.id_string?.toString() || 'list'
+  params: params,
+  key: route.params.id_string?.toString() || 'list',
+  watch: [params]
 })
 
 const meta = computed(() => ({
@@ -99,7 +103,7 @@ function capitalizeFirstLetter(string: string) {
           </div>
           <div class="flex-1">
             <h1 class="font-semibold text-2xl md:text-4xl">{{ meta.title }}</h1>
-            <p>{{ response.instance.desc }}</p>
+            <div>{{ response.instance.desc }}</div>
           </div>
         </div>
       </div>
@@ -120,7 +124,7 @@ function capitalizeFirstLetter(string: string) {
         <div class="flex-1">
           <div class="text-base font-bold">{{ item.name }}</div>
           <div class="line-clamp-3">
-            <p>{{ item.desc }}</p>
+            <div v-html="item.desc"></div>
           </div>
         </div>
       </nuxt-link>

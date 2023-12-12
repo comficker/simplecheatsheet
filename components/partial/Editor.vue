@@ -13,21 +13,26 @@ const html = computed(() => {
   return converter.makeHtml(post.text)
 })
 
-const handleInput = debounce((value: string) => {
-  if (us.isLogged) {
+const handleInput = debounce((value: string | undefined) => {
+  const payload = post
+  if (typeof value != "undefined") {
+    payload.text = value
+  }
+  if (us.isLogged && post.id_string) {
     useAuthFetch(`/cs/posts/${post.id_string}/`, {
       method: "PUT",
-      body: {
-        ...post,
-        text: value
-      }
+      body: payload
     })
   }
 }, 1500)
 
+watch(() => [post.name, post.text, post.db_status, post.id_string], () => {
+  handleInput(undefined)
+}, {deep: true})
+
 onMounted(() => {
-  ClassicEditor
-    .create(document.querySelector(`#editor_${post.id}`), {})
+  BalloonEditor
+    .create(document.querySelector(`#editor_${post.id}`))
     .then(editor => {
       editor.setData(html.value || '')
       editor.model.document.on('change:data', () => {

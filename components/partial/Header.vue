@@ -33,7 +33,7 @@ useClickOutSite(componentRef, () => {
 </script>
 <template>
   <div class="flex flex-1 gap-x-4 self-stretch justify-between">
-    <nav class="flex" aria-label="Breadcrumb">
+    <nav class="hidden md:flex" aria-label="Breadcrumb">
       <ol role="list" class="flex items-center space-x-4">
         <li>
           <nuxt-link to="/" class="text-gray-400 hover:text-gray-500">
@@ -50,7 +50,11 @@ useClickOutSite(componentRef, () => {
       </ol>
     </nav>
     <div class="flex items-center gap-x-4 lg:gap-x-6">
-      <nuxt-link v-if="userStore.isLogged" to="/submit" class="flex gap-2 items-center p-2.5 text-gray-400 hover:text-gray-500">
+      <helper-status-select/>
+      <nuxt-link
+        v-if="userStore.isLogged" to="/submit"
+        class="flex gap-2 items-center p-2.5 text-gray-400 hover:text-gray-500"
+      >
         <div class="h-6 w-6 i-con-plus"/>
         <span>Submit</span>
       </nuxt-link>
@@ -64,9 +68,12 @@ useClickOutSite(componentRef, () => {
             alt=""
           />
           <span
-            class="hidden lg:flex lg:items-center">
-            <span class="ml-4 text-sm font-semibold leading-6 text-gray-900"
-                  aria-hidden="true">{{ user.full_name }}</span>
+            class="hidden lg:flex lg:items-center"
+          >
+            <span
+              class="ml-4 text-sm font-semibold leading-6 text-gray-900"
+              aria-hidden="true"
+            >{{ user.full_name }}</span>
             <ChevronDownIcon class="ml-2 h-5 w-5 text-gray-400" aria-hidden="true"/>
           </span>
         </MenuButton>

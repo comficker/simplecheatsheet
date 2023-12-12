@@ -2,8 +2,11 @@
 import {PhotoIcon} from '@heroicons/vue/24/solid'
 import type {Topic, Post} from "~/interface";
 import type {ResponsePost} from "~/interface";
+import {useUserStore} from "#imports";
 
+const config = useRuntimeConfig()
 const route = useRoute()
+const us = useUserStore()
 const form = ref<{
   id: number
   name: string
@@ -39,7 +42,7 @@ if (route.query.id) {
     form.value.name = response.value.instance.name
     form.value.desc = response.value.instance.desc
     form.value.tags = response.value.instance.taxonomies.map(x => x.name)
-    form.value.media = response.value.instance.media ? response.value.instance.media.path : null
+    form.value.media = response.value.instance.media ? `${config.public.apiBase}${response.value.instance.media.path}` : null
     posts.value = response.value.results.filter((x: Post) => !x.parent).map(x => ({
       ...x,
       children: response.value?.results.filter((y: Post) => y.parent == x.id)
@@ -76,34 +79,37 @@ const openFile = function (file) {
 
 useHead({
   script: [
-    {src: 'https://cdn.ckeditor.com/ckeditor5/40.1.0/classic/ckeditor.js', async: true}
+    {src: '/ck/ckeditor.js', async: true}
   ],
 })
 
-const deletePost = (post: Post) => {
-
-}
-
-const addPost = (parent: Post | null) => {
+const addPost = async (parent: Post | null) => {
   const n = {
-    name: '',
+    name: 'Untitled',
     desc: '',
     text: '',
     parent: parent ? parent.id : null,
     topic: form.value.id,
     children: [],
-    expanded: false
+    expanded: false,
+    user: us.logged.id
   } as unknown as Post
-  if (parent) {
-    parent.children?.push(n)
-  } else {
-    posts.value.push(n)
+  const {data: post} = await useAuthFetch<Post>(`/cs/posts/`, {
+    method: "POST",
+    body: n
+  })
+  if (post.value) {
+    if (parent) {
+      parent.children?.push(post.value)
+    } else {
+      posts.value.push(post.value)
+    }
   }
 }
 </script>
 
 <template>
-  <form class="mx-auto max-w-xl py-8 space-y-4" @keydown.enter="$event.preventDefault()">
+  <form class="px-4 mx-auto max-w-xl py-8 space-y-4 overflow-hidden" @keydown.enter="$event.preventDefault()">
     <div>
       <h2 class="text-3xl font-semibold leading-7 text-gray-900">Submission form</h2>
       <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-6">
@@ -141,8 +147,8 @@ const addPost = (parent: Post | null) => {
           <label for="photo" class="block font-medium leading-6 text-gray-900">Photo</label>
           <div class="mt-2 flex items-center gap-x-3">
             <div class="">
-              <img v-if="form.media" class="h-20 w-20" :src="form.media" alt="">
-              <PhotoIcon v-else class="h-20 w-20 text-gray-300" aria-hidden="true"/>
+              <img v-if="form.media" class="h-20 w-20 object-cover" :src="form.media" alt="">
+              <PhotoIcon v-else class="h-20 w-20 text-gray-300 object-cover" aria-hidden="true"/>
             </div>
             <input
               type="file"
@@ -196,17 +202,32 @@ const addPost = (parent: Post | null) => {
       <div v-if="form.id" class="mt-6 space-y-3">
         <div class="block font-medium leading-6 text-gray-900 flex gap-3">
           <span>Sheets</span>
-          <i class="text-red-400">Auto save is on!</i>
+          <span class="text-red-400">Auto save is on!</span>
         </div>
-        <div v-for="(item, i) in posts" :key="`p_${i}`" class="space-y-2">
+        <div v-for="(item, i) in posts" :key="`p_${i}`" class="space-y-4">
           <div class="group flex gap-2 items-center cursor-pointer">
-            <div :class="[item.expanded ? 'i-con-chevron-down': 'i-con-chevron-right', 'w-4 h-4']" @click="item.expanded = !item.expanded"/>
+            <div
+              :class="[item.expanded ? 'i-con-chevron-down': 'i-con-chevron-right', 'w-4 h-4']"
+              @click="item.expanded = !item.expanded"/>
             <div class="h-6 min-w-16">
-              <input type="text" class="border-0 p-0" v-model="item.name">
+              <input type="text" class="border-0 p-0" v-model="item.name" :class="{'line-through': item.db_status == -1}">
             </div>
-            <div class="hidden group-hover:block w-4 h-5 text-red-500 duration-300 i-con-delete" @click="deletePost(item)"/>
+            <div class="flex gap-4 ml-auto">
+              <div class="flex items-center">
+                <input
+                  type="checkbox" :checked="!!item.db_status"
+                  :disabled="item.db_status === -1"
+                  class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                  @input="item.db_status = item.db_status ? 0 : 1"
+                >
+                <label
+                  for="link-checkbox"
+                  class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Public</label>
+              </div>
+              <div class="w-4 h-5 text-red-500 duration-300 i-con-delete"  @click="item.db_status = -1"/>
+            </div>
           </div>
-          <div v-if="item.expanded" class="space-y-2 ml-6">
+          <div v-show="item.expanded" class="space-y-4 md:ml-6">
             <client-only>
               <partial-editor :post="item"/>
             </client-only>
@@ -215,31 +236,54 @@ const addPost = (parent: Post | null) => {
               class="space-y-2"
             >
               <div class="group flex gap-2 items-center cursor-pointer">
-                <div :class="[child.expanded ? 'i-con-chevron-down': 'i-con-chevron-right', 'w-4 h-4']" @click="child.expanded = !child.expanded"/>
+                <div
+                  :class="[child.expanded ? 'i-con-chevron-down': 'i-con-chevron-right', 'w-4 h-4']"
+                  @click="child.expanded = !child.expanded"/>
                 <div class="h-6 min-w-16">
-                  <input type="text" class="border-0 p-0 focus:outline-none" v-model="child.name">
+                  <input
+                    type="text"
+                    class="border-0 p-0 focus:outline-none" :class="{'line-through': child.db_status == -1}"
+                    v-model="child.name" placeholder="Title"
+                  >
                 </div>
-                <div class="hidden group-hover:block w-4 h-5 text-red-500 duration-300 i-con-delete" @click="deletePost(child)"/>
+                <div class="ml-auto flex gap-4">
+                  <div class="flex items-center">
+                    <input
+                      type="checkbox" :checked="!!child.db_status"
+                      :disabled="child.db_status === -1"
+                      class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                      @input="child.db_status = child.db_status ? 0 : 1"
+                    >
+                    <label
+                      for="link-checkbox"
+                      class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Public</label>
+                  </div>
+                  <div class="w-4 h-5 text-red-500 duration-300 i-con-delete" @click="child.db_status = -1"/>
+                </div>
               </div>
-              <div v-if="child.expanded">
+              <div v-show="child.expanded">
                 <client-only>
                   <partial-editor :post="child"/>
                 </client-only>
               </div>
             </div>
-            <div class="group inline-flex rounded gap-2 items-center cursor-pointer font-semibold border p-1 px-3" @click="addPost(item)">
+            <div class="group inline-flex rounded gap-2 items-center cursor-pointer font-semibold border p-1 px-3"
+                 @click="addPost(item)">
               <div class="w-4 h-4 i-con-plus"/>
               <span>Add child</span>
             </div>
           </div>
         </div>
-        <div class="group inline-flex rounded gap-2 items-center cursor-pointer font-semibold border p-1 px-3" @click="addPost(null)">
+        <div
+          class="group inline-flex rounded gap-2 items-center cursor-pointer font-semibold border p-1 px-3"
+          @click="addPost(null)">
           <div class="w-4 h-4 i-con-plus"/>
           <span>Add sheet</span>
         </div>
       </div>
     </div>
     <div class="sticky bottom-0 py-3 bg-white mt-6 flex items-center justify-end gap-x-6">
+      <a :href="`/${form.id_string}`" target="_blank" class="rounded-md bg-gray-100 px-6 py-2 font-semibold">Preview</a>
       <button
         type="submit"
         class="rounded-md bg-indigo-600 px-6 py-2 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"

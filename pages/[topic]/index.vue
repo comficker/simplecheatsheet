@@ -8,7 +8,8 @@ const us = useUserStore()
 const config = useRuntimeConfig()
 const params = computed(() => ({
   "topic__id_string": route.params.topic,
-  "page_size": 100
+  "page_size": 100,
+  db_status__in: us.topicStatus.join(",")
 }))
 const {data: response} = await useAuthFetch<ResponsePost>(`/cs/posts/`, {
   params: params
@@ -160,7 +161,7 @@ useSeoMeta({
         </nuxt-link>
       </div>
     </div>
-    <div class="flex flex-col md:flex-row gap-6">
+    <div v-if="sections.length" class="flex flex-col md:flex-row gap-6">
       <div class="flex-1 space-y-6">
         <div v-for="(posts, i) in section_posts" :key="i" class="scroll-50 space-y-3" :id="sections[i].id_string">
           <h2 class="inline-flex font-bold py-1 p-2 bg-gradient-to-r from-indigo-50">

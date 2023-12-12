@@ -33,3 +33,7 @@ input[type="color"]::-webkit-color-swatch {
 html {
   scroll-behavior: smooth;
 }
+
+.ck.ck-editor__editable_inline {
+  border: 1px solid #EEE;
+}

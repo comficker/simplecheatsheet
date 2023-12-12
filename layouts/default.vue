@@ -100,7 +100,7 @@
         <div class="h-6 w-px bg-gray-200 lg:hidden" aria-hidden="true"/>
         <partial-header/>
       </div>
-      <main>
+      <main class="relative z-1">
         <div class="sticky z-40 top-12 left-0 bg-white w-full border-b border-gray-100">
           <div class="flex flex-nowrap items-center gap-3 font-medium">
             <div class="max-w-44">
