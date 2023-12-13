@@ -20,6 +20,8 @@ const {data: response} = await useAuthFetch<ResponsePost>(`/cs/posts/`, {
   })
 })
 
+const colum = computed(() => response.value?.instance?.meta?.layout || 3)
+
 const sections = computed<Post[]>(() => {
   if (response.value) {
     return response.value.results.filter((x: Post) => !x.parent)
@@ -167,8 +169,8 @@ useSeoMeta({
           <h2 class="inline-flex font-bold py-1 p-2 bg-gradient-to-r from-indigo-50">
             {{ sections[i].name }}
           </h2>
-          <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
-            <partial-card-sheet v-if="sections[i].text" class="mb-4" content-only :sheet="sections[i]"/>
+          <partial-card-sheet v-if="sections[i].text" class="mb-4 md:max-w-1/2" content-only :sheet="sections[i]"/>
+          <div class="grid gap-4 grid-cols-1" :class="[colum > 2 ? 'md:grid-cols-2': '', `xl:grid-cols-${colum}`]">
             <div class="w-full overflow-hidden" v-for="chunk in posts">
               <partial-card-sheet class="mb-4" v-for="item in chunk" :key="item.id" :sheet="item"/>
             </div>

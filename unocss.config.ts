@@ -52,6 +52,12 @@ export default defineConfig({
     'i-con-shared',
     'i-con-color',
     'i-con-hash',
-    'animate-pulse'
+    'animate-pulse',
+    'grid-cols-1',
+    'grid-cols-2',
+    'grid-cols-3',
+    'xl:grid-cols-1',
+    'xl:grid-cols-2',
+    'xl:grid-cols-3',
   ],
 })

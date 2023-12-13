@@ -14,7 +14,8 @@ const form = ref<{
   id_string: string
   tags: string[]
   media: null | ''
-  db_status: number
+  db_status: number,
+  meta: any
 }>({
   id: 0,
   name: '',
@@ -22,7 +23,10 @@ const form = ref<{
   id_string: '',
   tags: [],
   media: null,
-  db_status: 0
+  db_status: 0,
+  meta: {
+    layout: 3
+  }
 })
 const posts = ref<Post[]>([])
 
@@ -50,6 +54,12 @@ if (route.query.id) {
       ...x,
       children: response.value?.results.filter((y: Post) => y.parent == x.id)
     }))
+    if (!response.value.instance.meta || !response.value.instance.meta.layout) {
+      form.value.meta = {
+        ...response.value.instance.meta,
+        layout: 3
+      }
+    }
   }
 }
 
@@ -126,7 +136,8 @@ const addPost = async (parent: Post | null) => {
                 required
                 type="text" name="name" id="name" autocomplete="username"
                 class="block flex-1 border-0 bg-transparent py-1.5 px-3 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                placeholder="Something"/>
+                placeholder="Something"
+              />
             </div>
           </div>
         </div>
@@ -143,6 +154,22 @@ const addPost = async (parent: Post | null) => {
                 type="text" name="id_string" id="id_string" autocomplete="id_string"
                 class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                 placeholder="something"/>
+            </div>
+          </div>
+        </div>
+        <div class="col-span-full">
+          <label class="block font-medium leading-6 text-gray-900">Layout</label>
+          <div class="mt-2 grid grid-cols-3 gap-4">
+            <div v-for="i in 3">
+              <div
+                class="p-4 bg-gray-100 rounded cursor-pointer"
+                :class="form.meta.layout === i ? 'border border-blue-500': ''"
+                @click="form.meta.layout = i"
+              >
+                <div class="grid gap-2" :class="[`grid-cols-${i}`]">
+                  <div v-for="j in i" :key="j" class="h-12 bg-white rounded"></div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -213,7 +240,8 @@ const addPost = async (parent: Post | null) => {
               :class="[item.expanded ? 'i-con-chevron-down': 'i-con-chevron-right', 'w-4 h-4']"
               @click="item.expanded = !item.expanded"/>
             <div class="h-6 min-w-16">
-              <input type="text" class="border-0 p-0" v-model="item.name" :class="{'line-through': item.db_status == -1}">
+              <input type="text" class="border-0 p-0" v-model="item.name"
+                     :class="{'line-through': item.db_status == -1}">
             </div>
             <div class="flex gap-4 ml-auto">
               <div class="flex items-center">
@@ -227,7 +255,7 @@ const addPost = async (parent: Post | null) => {
                   for="link-checkbox"
                   class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Public</label>
               </div>
-              <div class="w-4 h-5 text-red-500 duration-300 i-con-delete"  @click="item.db_status = -1"/>
+              <div class="w-4 h-5 text-red-500 duration-300 i-con-delete" @click="item.db_status = -1"/>
             </div>
           </div>
           <div v-show="item.expanded" class="space-y-4 md:ml-6">
