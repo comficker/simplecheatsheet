@@ -17,6 +17,7 @@ const handleInput = debounce((value: string | undefined) => {
   const payload = post
   if (typeof value != "undefined") {
     payload.text = value
+    payload.text.trim()
   }
   if (us.isLogged && post.id_string) {
     useAuthFetch(`/cs/posts/${post.id_string}/`, {
@@ -34,7 +35,7 @@ onMounted(() => {
   BalloonEditor
     .create(document.querySelector(`#editor_${post.id}`))
     .then(editor => {
-      editor.setData(html.value || '')
+      editor.setData(html.value || 'Sample')
       editor.model.document.on('change:data', () => {
         handleInput(editor.getData())
       });
@@ -46,8 +47,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="">
-    <div :id="`editor_${post.id}`"/>
+  <div>
+    <div class="space-y-2 pb-3" :id="`editor_${post.id}`"/>
   </div>
 </template>
 

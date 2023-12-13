@@ -27,7 +27,7 @@ const html = computed(() => {
 
 <style>
 .sheet {
-  @apply overflow-auto p-3 border border-gray-100 bg-green-50/70 relative;
+  @apply overflow-auto p-3 border border-gray-100 bg-green-50/70 relative space-y-2;
   border-radius: 4px;
 }
 
@@ -62,7 +62,7 @@ const html = computed(() => {
 }
 
 .sheet code {
-  @apply inline-flex rounded bg-gray-100 p-1 my-0.5 px-3 border overflow-auto no-scrollbar font-mono text-xs;
+  @apply inline-flex rounded bg-gray-100 p-1 my-0.5 px-2 border overflow-auto no-scrollbar font-mono text-xs;
 
   -ms-overflow-style: none; /* Internet Explorer 10+ */
   scrollbar-width: none; /* Firefox */
@@ -75,6 +75,5 @@ const html = computed(() => {
 .sheet code::-webkit-scrollbar {
   display: none; /* Safari and Chrome */
 }
-
 </style>
 

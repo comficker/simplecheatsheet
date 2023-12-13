@@ -112,6 +112,7 @@ const addPost = async (parent: Post | null) => {
     body: n
   })
   if (post.value) {
+    post.value.children = []
     if (parent) {
       parent.children?.push(post.value)
     } else {
@@ -122,7 +123,7 @@ const addPost = async (parent: Post | null) => {
 </script>
 
 <template>
-  <form class="px-4 mx-auto max-w-xl py-8 space-y-4 overflow-hidden" @keydown.enter="$event.preventDefault()">
+  <div class="px-4 mx-auto max-w-xl py-8 space-y-4 overflow-hidden">
     <div>
       <h2 class="text-3xl font-semibold leading-7 text-gray-900">Submission form</h2>
       <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-6">
@@ -298,8 +299,10 @@ const addPost = async (parent: Post | null) => {
                 </client-only>
               </div>
             </div>
-            <div class="group inline-flex rounded gap-2 items-center cursor-pointer font-semibold border p-1 px-3"
-                 @click="addPost(item)">
+            <div
+              class="group inline-flex rounded gap-2 items-center cursor-pointer font-semibold border p-1 px-3"
+              @click="addPost(item)"
+            >
               <div class="w-4 h-4 i-con-plus"/>
               <span>Add child</span>
             </div>
@@ -325,7 +328,8 @@ const addPost = async (parent: Post | null) => {
           for="link-checkbox"
           class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Public</label>
       </div>
-      <a :href="`/${form.id_string}`" target="_blank" class="rounded-md bg-gray-100 px-6 py-2 font-semibold">Preview</a>
+      <a v-if="form.id" :href="`/${form.id_string}`" target="_blank"
+         class="rounded-md bg-gray-100 px-6 py-2 font-semibold">Preview</a>
       <button
         type="submit"
         class="rounded-md bg-indigo-600 px-6 py-2 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
@@ -334,5 +338,5 @@ const addPost = async (parent: Post | null) => {
         Save
       </button>
     </div>
-  </form>
+  </div>
 </template>
