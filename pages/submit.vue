@@ -14,13 +14,15 @@ const form = ref<{
   id_string: string
   tags: string[]
   media: null | ''
+  db_status: number
 }>({
   id: 0,
   name: '',
   desc: '',
   id_string: '',
   tags: [],
-  media: null
+  media: null,
+  db_status: 0
 })
 const posts = ref<Post[]>([])
 
@@ -37,6 +39,7 @@ if (route.query.id) {
     })
   })
   if (response.value) {
+    form.value.db_status = response.value.instance.db_status
     form.value.id = response.value.instance.id
     form.value.id_string = response.value.instance.id_string
     form.value.name = response.value.instance.name
@@ -283,6 +286,17 @@ const addPost = async (parent: Post | null) => {
       </div>
     </div>
     <div class="sticky bottom-0 py-3 bg-white mt-6 flex items-center justify-end gap-x-6">
+      <div class="flex items-center mr-auto">
+        <input
+          type="checkbox" :checked="!!form.db_status"
+          :disabled="form.db_status === -1"
+          class="w-6 h-6 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+          @input="form.db_status = form.db_status ? 0 : 1"
+        >
+        <label
+          for="link-checkbox"
+          class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Public</label>
+      </div>
       <a :href="`/${form.id_string}`" target="_blank" class="rounded-md bg-gray-100 px-6 py-2 font-semibold">Preview</a>
       <button
         type="submit"
