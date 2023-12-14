@@ -177,7 +177,13 @@ useSeoMeta({
             {{ sections[i].name }}
           </h2>
           <partial-card-sheet v-if="sections[i].text" class="mb-4 md:max-w-1/2" content-only :sheet="sections[i]"/>
-          <div class="grid gap-4 grid-cols-1" :class="[colum > 2 ? 'md:grid-cols-2': '', `xl:grid-cols-${colum}`]">
+          <div
+            class="grid gap-4 grid-cols-1"
+            :class="[
+              colum > 2 ? 'md:grid-cols-2': '',
+              `xl:grid-cols-${sections[i].meta?.layout || colum}`
+              ]"
+          >
             <div class="w-full overflow-hidden" v-for="chunk in posts">
               <partial-card-sheet class="mb-4" v-for="item in chunk" :key="item.id" :sheet="item"/>
             </div>

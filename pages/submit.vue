@@ -3,6 +3,7 @@ import {PhotoIcon} from '@heroicons/vue/24/solid'
 import type {Topic, Post} from "~/interface";
 import type {ResponsePost} from "~/interface";
 import {useUserStore} from "#imports";
+import PostOption from "~/components/helper/PostOption.vue";
 
 const config = useRuntimeConfig()
 const route = useRoute()
@@ -59,7 +60,8 @@ if (route.query.id) {
       post.children = response.value?.results.filter((y: Post) => y.parent == post.id).sort((a, b) => {
         const s = post.meta?.sort || []
         return s.indexOf(a.id) - s.indexOf(b.id)
-      })
+      }).map(x => ({...x, expanded: false}))
+      post.expanded = false
     })
     if (!response.value.instance.meta || !response.value.instance.meta.layout) {
       form.value.meta = {
@@ -136,7 +138,7 @@ function moveArray(arr: any[], fromIndex: number, toIndex: number) {
 
 const move = (l: Post | null, from: number, is_up: boolean) => {
   const arrLen = l ? l.children?.length || 0 : posts.value.length
-  let to = is_up ? from - 1: from + 1
+  let to = is_up ? from - 1 : from + 1
 
   if (to < 0) to = arrLen - 1;
   if (to === arrLen) to = 0;
@@ -153,8 +155,13 @@ const move = (l: Post | null, from: number, is_up: boolean) => {
       ...form.value.meta,
       sort: posts.value.map(x => x.id)
     }
-    submit().then(console.log)
+    submit(undefined).then(console.log)
   }
+}
+
+const handleUpdatePost = (index:number, value: Post) => {
+  posts.value[index].meta = value.meta
+  posts.value[index].id_string = value.id_string
 }
 </script>
 
@@ -272,8 +279,8 @@ const move = (l: Post | null, from: number, is_up: boolean) => {
           <span class="text-red-400">Auto save is on!</span>
         </div>
         <client-only>
-          <TransitionGroup tag="div" name="fade" class="space-y-3 relative">
-            <div v-for="(item, i) in posts" :key="`p_${i}`" class="space-y-4">
+          <TransitionGroup tag="div" name="fade" class="space-y-3">
+            <div v-for="(item, i) in posts" :key="`p_${i}`" class="space-y-4 bg-white">
               <div class="group flex gap-2 items-center cursor-pointer">
                 <div class="flex flex-col border divide-y">
                   <div class="p-0.5 hover:bg-gray-50" @click="move(null, i, true)">
@@ -285,41 +292,47 @@ const move = (l: Post | null, from: number, is_up: boolean) => {
                 </div>
                 <div
                   :class="[item.expanded ? 'i-con-chevron-down': 'i-con-chevron-right', 'w-4 h-4']"
-                  @click="item.expanded = !item.expanded"/>
+                  @click="item.expanded = !item.expanded"
+                />
                 <div class="h-6 min-w-16">
-                  <input type="text" class="border-0 p-0" v-model="item.name"
-                         :class="{'line-through': item.db_status == -1}">
+                  <input
+                    type="text" class="border-0 p-0" v-model="item.name"
+                    :class="{'line-through': item.db_status == -1}"
+                  >
                 </div>
-                <div class="flex gap-4 ml-auto">
+                <div class="flex items-center gap-4 ml-auto">
+                  <post-option :model-value="item" @update:model-value="handleUpdatePost(i, $event)"/>
                   <div class="flex items-center">
                     <input
+                      :id="`check-status-${item.id}`"
                       type="checkbox" :checked="!!item.db_status"
                       :disabled="item.db_status === -1"
                       class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                       @input="item.db_status = item.db_status ? 0 : 1"
                     >
                     <label
-                      for="link-checkbox"
-                      class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Public</label>
+                      :for="`check-status-${item.id}`"
+                      class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                    >Public</label>
                   </div>
-                  <div class="w-4 h-5 text-red-500 duration-300 i-con-delete" @click="item.db_status = -1"/>
+                  <div class="w-4 h-4 text-red-500 duration-300 i-con-delete" @click="item.db_status = -1"/>
                 </div>
               </div>
               <div v-show="item.expanded" class="space-y-4 md:ml-6">
                 <client-only>
                   <partial-editor :post="item"/>
                 </client-only>
-                <div class="space-y-4 relative">
+                <div class="space-y-4">
                   <div
                     v-for="(child, j) in item.children" :key="`c_${j}`"
-                    class="space-y-2"
+                    class="space-y-2 bg-white"
                   >
                     <div class="group flex gap-2 items-center cursor-pointer">
                       <div class="flex flex-col border divide-y">
-                        <div class="p-0.5 hover:bg-gray-50" @click="move(item, i, true)">
+                        <div class="p-0.5 hover:bg-gray-50" @click="move(item, j, true)">
                           <div class="w-4 h-4 i-con-chevron-up"></div>
                         </div>
-                        <div class="p-0.5 hover:bg-gray-50" @click="move(item, i, false)">
+                        <div class="p-0.5 hover:bg-gray-50" @click="move(item, j, false)">
                           <div class="w-4 h-4 i-con-chevron-down"></div>
                         </div>
                       </div>

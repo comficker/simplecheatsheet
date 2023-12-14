@@ -19,7 +19,7 @@ const handleInput = debounce(() => {
   payload.text = text.value
   payload.text.trim()
   if (us.isLogged && post.id_string) {
-    useAuthFetch(`/cs/posts/${post.id_string}/`, {
+    useAuthFetch(`/cs/posts/${post.id}/`, {
       method: "PUT",
       body: payload,
       watch: false
@@ -32,18 +32,25 @@ watch(() => [post.name, text, post.db_status, post.id_string, post.meta], () => 
   handleInput()
 }, {deep: true})
 
-onMounted(() => {
-  BalloonEditor
-    .create(document.querySelector(`#editor_${post.id}`))
-    .then((editor: any) => {
-      editor.setData(html.value || '')
-      editor.model.document.on('change:data', () => {
-        text.value = editor.getData()
+watch(() => post.expanded, (n) => {
+  if (n) {
+    BalloonEditor
+      .create(document.querySelector(`#editor_${post.id}`))
+      .then((editor: any) => {
+        editor.setData(html.value || '')
+        editor.model.document.on('change:data', () => {
+          text.value = editor.getData()
+        });
+        window.ck = editor
+      })
+      .catch((error: any) => {
+        console.error(error);
       });
-    })
-    .catch((error: any) => {
-      console.error(error);
-    });
+  } else {
+    if (window.ck) {
+      window.ck.destroy()
+    }
+  }
 })
 </script>
 
