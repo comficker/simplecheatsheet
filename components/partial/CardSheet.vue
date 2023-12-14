@@ -36,7 +36,7 @@ const html = computed(() => {
 }
 
 .sheet table {
-  @apply table-auto text-left w-full;
+  @apply table-fixed text-left w-full;
 }
 
 .sheet table:not(:last-child) {

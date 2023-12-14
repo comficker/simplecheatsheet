@@ -176,7 +176,7 @@ useSeoMeta({
           <h2 class="inline-flex font-bold py-1 p-2 bg-gradient-to-r from-indigo-50">
             {{ sections[i].name }}
           </h2>
-          <partial-card-sheet v-if="sections[i].text" class="mb-4 md:max-w-1/2" content-only :sheet="sections[i]"/>
+          <partial-card-sheet v-if="sections[i].text" class="mb-4 xl:max-w-2/5" content-only :sheet="sections[i]"/>
           <div
             class="grid gap-4 grid-cols-1"
             :class="[

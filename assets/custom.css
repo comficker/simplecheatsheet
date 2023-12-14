@@ -34,6 +34,14 @@ html {
   scroll-behavior: smooth;
 }
 
-.ck.ck-editor__editable_inline {
+.ck-content.ck-editor__editable {
   border: 1px solid #EEE;
+}
+
+.table.ck-widget {
+  width: 100%;
+}
+
+.table.ck-widget table {
+  table-layout: fixed;
 }
