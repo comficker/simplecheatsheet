@@ -25,7 +25,8 @@ const form = ref<{
   media: null,
   db_status: 0,
   meta: {
-    layout: 3
+    layout: 3,
+    sort: []
   }
 })
 const posts = ref<Post[]>([])
@@ -50,10 +51,16 @@ if (route.query.id) {
     form.value.desc = response.value.instance.desc
     form.value.tags = response.value.instance.taxonomies.map(x => x.name)
     form.value.media = response.value.instance.media ? `${config.public.apiBase}${response.value.instance.media.path}` : null
-    posts.value = response.value.results.filter((x: Post) => !x.parent).map(x => ({
-      ...x,
-      children: response.value?.results.filter((y: Post) => y.parent == x.id)
-    }))
+    posts.value = response.value.results.filter((x: Post) => !x.parent)
+    posts.value.sort((a, b) => {
+      const s = response.value?.instance?.meta?.sort || []
+      return s.indexOf(a.id) - s.indexOf(b.id)
+    }).forEach(post => {
+      post.children = response.value?.results.filter((y: Post) => y.parent == post.id).sort((a, b) => {
+        const s = post.meta?.sort || []
+        return s.indexOf(a.id) - s.indexOf(b.id)
+      })
+    })
     if (!response.value.instance.meta || !response.value.instance.meta.layout) {
       form.value.meta = {
         ...response.value.instance.meta,
@@ -71,8 +78,8 @@ const addTag = function () {
   }
 }
 
-const submit = async (e: Event) => {
-  e.preventDefault()
+const submit = async (e: Event | undefined) => {
+  if (e) e.preventDefault()
   const {data: response} = await useAuthFetch<Topic>(`/cs/update-topic/`, {
     method: "POST",
     body: JSON.parse(JSON.stringify(form.value))
@@ -92,7 +99,7 @@ const openFile = function (file) {
 
 useHead({
   script: [
-    {src: '/ck/ckeditor.js', async: true}
+    {src: '/ck/ckeditor.js', async: true, defer: true}
   ],
 })
 
@@ -118,6 +125,35 @@ const addPost = async (parent: Post | null) => {
     } else {
       posts.value.push(post.value)
     }
+  }
+}
+
+function moveArray(arr: any[], fromIndex: number, toIndex: number) {
+  const element = arr[fromIndex];
+  arr.splice(fromIndex, 1);
+  arr.splice(toIndex, 0, element);
+}
+
+const move = (l: Post | null, from: number, is_up: boolean) => {
+  const arrLen = l ? l.children?.length || 0 : posts.value.length
+  let to = is_up ? from - 1: from + 1
+
+  if (to < 0) to = arrLen - 1;
+  if (to === arrLen) to = 0;
+
+  moveArray(l ? l.children || [] : posts.value, from, to)
+
+  if (l) {
+    l.meta = {
+      ...l.meta,
+      sort: l.children?.map(x => x.id) || []
+    }
+  } else {
+    form.value.meta = {
+      ...form.value.meta,
+      sort: posts.value.map(x => x.id)
+    }
+    submit().then(console.log)
   }
 }
 </script>
@@ -235,79 +271,101 @@ const addPost = async (parent: Post | null) => {
           <span>Sheets</span>
           <span class="text-red-400">Auto save is on!</span>
         </div>
-        <div v-for="(item, i) in posts" :key="`p_${i}`" class="space-y-4">
-          <div class="group flex gap-2 items-center cursor-pointer">
-            <div
-              :class="[item.expanded ? 'i-con-chevron-down': 'i-con-chevron-right', 'w-4 h-4']"
-              @click="item.expanded = !item.expanded"/>
-            <div class="h-6 min-w-16">
-              <input type="text" class="border-0 p-0" v-model="item.name"
-                     :class="{'line-through': item.db_status == -1}">
-            </div>
-            <div class="flex gap-4 ml-auto">
-              <div class="flex items-center">
-                <input
-                  type="checkbox" :checked="!!item.db_status"
-                  :disabled="item.db_status === -1"
-                  class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                  @input="item.db_status = item.db_status ? 0 : 1"
-                >
-                <label
-                  for="link-checkbox"
-                  class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Public</label>
-              </div>
-              <div class="w-4 h-5 text-red-500 duration-300 i-con-delete" @click="item.db_status = -1"/>
-            </div>
-          </div>
-          <div v-show="item.expanded" class="space-y-4 md:ml-6">
-            <client-only>
-              <partial-editor :post="item"/>
-            </client-only>
-            <div
-              v-for="(child, j) in item.children" :key="`c_${j}`"
-              class="space-y-2"
-            >
+        <client-only>
+          <TransitionGroup tag="div" name="fade" class="space-y-3 relative">
+            <div v-for="(item, i) in posts" :key="`p_${i}`" class="space-y-4">
               <div class="group flex gap-2 items-center cursor-pointer">
-                <div
-                  :class="[child.expanded ? 'i-con-chevron-down': 'i-con-chevron-right', 'w-4 h-4']"
-                  @click="child.expanded = !child.expanded"/>
-                <div class="h-6 min-w-16">
-                  <input
-                    type="text"
-                    class="border-0 p-0 focus:outline-none" :class="{'line-through': child.db_status == -1}"
-                    v-model="child.name" placeholder="Title"
-                  >
+                <div class="flex flex-col border divide-y">
+                  <div class="p-0.5 hover:bg-gray-50" @click="move(null, i, true)">
+                    <div class="w-4 h-4 i-con-chevron-up"></div>
+                  </div>
+                  <div class="p-0.5 hover:bg-gray-50" @click="move(null, i, false)">
+                    <div class="w-4 h-4 i-con-chevron-down"></div>
+                  </div>
                 </div>
-                <div class="ml-auto flex gap-4">
+                <div
+                  :class="[item.expanded ? 'i-con-chevron-down': 'i-con-chevron-right', 'w-4 h-4']"
+                  @click="item.expanded = !item.expanded"/>
+                <div class="h-6 min-w-16">
+                  <input type="text" class="border-0 p-0" v-model="item.name"
+                         :class="{'line-through': item.db_status == -1}">
+                </div>
+                <div class="flex gap-4 ml-auto">
                   <div class="flex items-center">
                     <input
-                      type="checkbox" :checked="!!child.db_status"
-                      :disabled="child.db_status === -1"
+                      type="checkbox" :checked="!!item.db_status"
+                      :disabled="item.db_status === -1"
                       class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                      @input="child.db_status = child.db_status ? 0 : 1"
+                      @input="item.db_status = item.db_status ? 0 : 1"
                     >
                     <label
                       for="link-checkbox"
                       class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Public</label>
                   </div>
-                  <div class="w-4 h-5 text-red-500 duration-300 i-con-delete" @click="child.db_status = -1"/>
+                  <div class="w-4 h-5 text-red-500 duration-300 i-con-delete" @click="item.db_status = -1"/>
                 </div>
               </div>
-              <div v-show="child.expanded">
+              <div v-show="item.expanded" class="space-y-4 md:ml-6">
                 <client-only>
-                  <partial-editor :post="child"/>
+                  <partial-editor :post="item"/>
                 </client-only>
+                <div class="space-y-4 relative">
+                  <div
+                    v-for="(child, j) in item.children" :key="`c_${j}`"
+                    class="space-y-2"
+                  >
+                    <div class="group flex gap-2 items-center cursor-pointer">
+                      <div class="flex flex-col border divide-y">
+                        <div class="p-0.5 hover:bg-gray-50" @click="move(item, i, true)">
+                          <div class="w-4 h-4 i-con-chevron-up"></div>
+                        </div>
+                        <div class="p-0.5 hover:bg-gray-50" @click="move(item, i, false)">
+                          <div class="w-4 h-4 i-con-chevron-down"></div>
+                        </div>
+                      </div>
+                      <div
+                        :class="[child.expanded ? 'i-con-chevron-down': 'i-con-chevron-right', 'w-4 h-4']"
+                        @click="child.expanded = !child.expanded"/>
+                      <div class="h-6 min-w-16">
+                        <input
+                          type="text"
+                          class="border-0 p-0 focus:outline-none" :class="{'line-through': child.db_status == -1}"
+                          v-model="child.name" placeholder="Title"
+                        >
+                      </div>
+                      <div class="ml-auto flex gap-4">
+                        <div class="flex items-center">
+                          <input
+                            type="checkbox" :checked="!!child.db_status"
+                            :disabled="child.db_status === -1"
+                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            @input="child.db_status = child.db_status ? 0 : 1"
+                          >
+                          <label
+                            for="link-checkbox"
+                            class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Public</label>
+                        </div>
+                        <div class="w-4 h-5 text-red-500 duration-300 i-con-delete" @click="child.db_status = -1"/>
+                      </div>
+                    </div>
+                    <div v-show="child.expanded">
+                      <client-only>
+                        <partial-editor :post="child"/>
+                      </client-only>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="group inline-flex rounded gap-2 items-center cursor-pointer font-semibold border p-1 px-3"
+                  @click="addPost(item)"
+                >
+                  <div class="w-4 h-4 i-con-plus"/>
+                  <span>Add child</span>
+                </div>
               </div>
             </div>
-            <div
-              class="group inline-flex rounded gap-2 items-center cursor-pointer font-semibold border p-1 px-3"
-              @click="addPost(item)"
-            >
-              <div class="w-4 h-4 i-con-plus"/>
-              <span>Add child</span>
-            </div>
-          </div>
-        </div>
+          </TransitionGroup>
+        </client-only>
         <div
           class="group inline-flex rounded gap-2 items-center cursor-pointer font-semibold border p-1 px-3"
           @click="addPost(null)">
@@ -340,3 +398,21 @@ const addPost = async (parent: Post | null) => {
     </div>
   </div>
 </template>
+
+<style>
+.fade-move,
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: scaleY(0.01) translate(30px, 0);
+}
+
+.fade-leave-active {
+  position: absolute;
+}
+</style>

@@ -12,35 +12,36 @@ const {post} = defineProps<{ post: Post }>()
 const html = computed(() => {
   return converter.makeHtml(post.text)
 })
-
-const handleInput = debounce((value: string | undefined) => {
+const text = ref(html.value)
+const call = ref(1)
+const handleInput = debounce(() => {
   const payload = post
-  if (typeof value != "undefined") {
-    payload.text = value
-    payload.text.trim()
-  }
+  payload.text = text.value
+  payload.text.trim()
   if (us.isLogged && post.id_string) {
     useAuthFetch(`/cs/posts/${post.id_string}/`, {
       method: "PUT",
-      body: payload
+      body: payload,
+      watch: false
     })
   }
+  call.value ++
 }, 1500)
 
-watch(() => [post.name, post.text, post.db_status, post.id_string], () => {
-  handleInput(undefined)
+watch(() => [post.name, text, post.db_status, post.id_string, post.meta], () => {
+  handleInput()
 }, {deep: true})
 
 onMounted(() => {
   BalloonEditor
     .create(document.querySelector(`#editor_${post.id}`))
-    .then(editor => {
-      editor.setData(html.value || 'Sample')
+    .then((editor: any) => {
+      editor.setData(html.value || '')
       editor.model.document.on('change:data', () => {
-        handleInput(editor.getData())
+        text.value = editor.getData()
       });
     })
-    .catch(error => {
+    .catch((error: any) => {
       console.error(error);
     });
 })

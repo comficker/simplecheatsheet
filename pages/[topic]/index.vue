@@ -24,7 +24,10 @@ const colum = computed(() => response.value?.instance?.meta?.layout || 3)
 
 const sections = computed<Post[]>(() => {
   if (response.value) {
-    return response.value.results.filter((x: Post) => !x.parent)
+    return response.value.results.filter((x: Post) => !x.parent).sort((a, b) => {
+      const s = response.value?.instance?.meta?.sort || []
+      return s.indexOf(a.id) - s.indexOf(b.id)
+    })
   }
   return []
 })
@@ -46,6 +49,10 @@ const section_posts = computed<Post[][][]>(() => {
   if (response.value) {
     return sections.value.map(x => {
       const posts = response.value?.results.filter((p: Post) => p.parent == x.id) || []
+      posts.sort((a, b) => {
+        const s = x.meta?.sort || []
+        return s.indexOf(a.id) - s.indexOf(b.id)
+      })
       return chunk(posts, 3)
     })
   }
