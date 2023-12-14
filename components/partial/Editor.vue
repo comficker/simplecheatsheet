@@ -3,6 +3,7 @@ import type {Post} from "~/interface";
 import showdown from "showdown";
 import pkg from "lodash";
 import {useUserStore} from "#imports";
+import {string_to_slug} from "~/helper/parser"
 
 const {debounce} = pkg;
 const us = useUserStore()
@@ -25,10 +26,13 @@ const handleInput = debounce(() => {
       watch: false
     })
   }
-  call.value ++
+  call.value++
 }, 1500)
 
-watch(() => [post.name, text, post.db_status, post.id_string, post.meta], () => {
+watch(() => [post.name, text, post.db_status, post.id_string, post.meta], (value, oldValue, onCleanup) => {
+  if (value[0] != oldValue[0]) {
+    post.id_string = string_to_slug(value[0])
+  }
   handleInput()
 }, {deep: true})
 

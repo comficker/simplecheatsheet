@@ -127,6 +127,11 @@ const addPost = async (parent: Post | null) => {
     } else {
       posts.value.push(post.value)
     }
+    form.value.meta = {
+      ...form.value.meta,
+      sort: posts.value.map(x => x.id)
+    }
+    submit(undefined).then(console.log)
   }
 }
 
