@@ -36,7 +36,7 @@ const html = computed(() => {
 }
 
 .sheet table {
-  @apply table-fixed text-left w-full;
+  @apply table-auto text-left w-full;
 }
 
 .sheet table:not(:last-child) {
@@ -53,7 +53,7 @@ const html = computed(() => {
 
 .sheet th,
 .sheet td {
-  @apply py-2;
+  @apply py-2 min-w-48;
 }
 
 .sheet th:not(:last-child),

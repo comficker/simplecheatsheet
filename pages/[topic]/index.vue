@@ -142,7 +142,7 @@ useSeoMeta({
           <div class="flex gap-4">
             <div v-if="response.instance.media" class="flex-none">
               <img
-                class="w-16"
+                class="w-16 md:w-24"
                 :src="config.public.apiBase + response.instance.media.sizes.thumb_128"
                 :alt="response.instance.name"
               >
