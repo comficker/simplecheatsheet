@@ -18,7 +18,7 @@ const call = ref(1)
 const handleInput = debounce(() => {
   const payload = post
   payload.text = text.value
-  payload.text.trim()
+  if (payload.text) payload.text.trim()
   if (us.isLogged && post.id_string) {
     useAuthFetch(`/cs/posts/${post.id}/`, {
       method: "PUT",
