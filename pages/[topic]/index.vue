@@ -187,15 +187,7 @@ onMounted(() => {
         >
           <div class="scroll-50 space-y-3" :id="sections[i].id_string">
             <h2 class="inline-flex font-bold py-1 p-2 bg-gradient-to-r from-indigo-50">{{ sections[i].name }}</h2>
-            <div
-              class="grid gap-4"
-              :class="[
-              colum > 2 ? 'md:grid-cols-2': '',
-              `xl:grid-cols-${sections[i].meta?.layout || colum}`
-              ]"
-            >
-              <partial-card-sheet v-if="sections[i].text" content-only :sheet="sections[i]"/>
-            </div>
+            <partial-card-sheet v-if="sections[i].text" content-only :sheet="sections[i]"/>
             <div
               class="grid gap-4 grid-cols-1"
               :class="[
