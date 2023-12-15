@@ -70,7 +70,7 @@ watch(search, debounce(() => {
     <main class="flex-1 mx-auto w-full max-w-7xl px-6 pb-16 pt-10 sm:pb-24 lg:px-8">
       <nuxt-link to="/">
         <img
-          class="mx-auto h-6 w-auto" src="/logo.png"
+          class="mx-auto w-36" src="/logo.png"
           alt=""
         />
       </nuxt-link>

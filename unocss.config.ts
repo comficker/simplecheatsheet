@@ -59,5 +59,9 @@ export default defineConfig({
     'xl:grid-cols-1',
     'xl:grid-cols-2',
     'xl:grid-cols-3',
+    'xl:w-1/3',
+    'xl:w-1/2',
+    'w-1/2',
+    'w-1/3'
   ],
 })

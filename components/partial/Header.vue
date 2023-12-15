@@ -33,7 +33,7 @@ useClickOutSite(componentRef, () => {
 </script>
 <template>
   <div class="flex flex-1 gap-x-4 self-stretch justify-between">
-    <nav class="hidden md:flex" aria-label="Breadcrumb">
+    <nav class="flex" aria-label="Breadcrumb">
       <ol role="list" class="flex items-center space-x-4">
         <li>
           <nuxt-link to="/" class="text-gray-400 hover:text-gray-500">
@@ -44,13 +44,13 @@ useClickOutSite(componentRef, () => {
         <li v-for="page in pages" :key="page.name">
           <nuxt-link :to="page.href" class="flex items-center">
             <ChevronRightIcon class="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true"/>
-            <div class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700">{{ page.name }}</div>
+            <span class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700">{{ page.name }}</span>
           </nuxt-link>
         </li>
       </ol>
     </nav>
     <div class="flex items-center gap-x-4 lg:gap-x-6">
-      <helper-status-select/>
+      <helper-status-select class="hidden md:block"/>
       <nuxt-link
         v-if="userStore.isLogged" to="/submit"
         class="flex gap-2 items-center p-2.5 text-gray-400 hover:text-gray-500"

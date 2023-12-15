@@ -19,7 +19,7 @@ const html = computed(() => {
 <template>
   <div class="sheet no-scrollbar">
     <h4
-      v-if="!contentOnly" class="inline-flex mb-2 p-1 pr-8 rounded shadow font-bold bg-gradient-to-r from-green-300"
+      v-if="!contentOnly" class="inline-flex p-1 pr-8 rounded shadow font-bold bg-gradient-to-r from-green-300"
     >{{ sheet.name}}</h4>
     <div class="content" v-html="html"></div>
   </div>

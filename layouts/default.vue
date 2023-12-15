@@ -27,10 +27,10 @@
                   </button>
                 </div>
               </TransitionChild>
-              <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4">
-                <nuxt-link to="/" class="flex h-16 shrink-0 items-center">
+              <div class="flex grow flex-col gap-y-3 overflow-y-auto bg-white px-6 pb-4">
+                <nuxt-link to="/" class="flex h-10 shrink-0 items-center">
                   <img
-                    class="w-3/4" src="/logo.png"
+                    class="w-32" src="/logo.png"
                     alt="Simple Cheat Sheet"
                   />
                 </nuxt-link>
@@ -43,10 +43,10 @@
                             :to="`/category/${item.id_string}`"
                             :class="[item.current ? 'bg-gray-50 text-indigo-600' : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50', 'group flex gap-x-3 rounded-md p-2 leading-6 font-semibold']"
                           >
-                            <div v-if="item.media" class="flex-none">
+                            <span v-if="item.media" class="flex-none">
                               <img :src="config.public.apiBase + item.media.sizes.thumb_24" :alt="item.name"
                                    class="w-4">
-                            </div>
+                            </span>
                             <span class="flex-1">{{ item.name }}</span>
                           </nuxt-link>
                         </li>
@@ -64,7 +64,7 @@
       <div class="flex grow flex-col border-r border-gray-100 overflow-y-auto bg-white">
         <nuxt-link to="/" class="px-4 flex h-12 border-b border-gray-100 shrink-0 items-center">
           <img
-            class="w-full" src="/logo.png"
+            class="w-32" src="/logo.png"
             alt="Simple CheatSheet"
           />
         </nuxt-link>
@@ -77,9 +77,9 @@
                     :to="`/category/${item.id_string}`"
                     :class="[item.current ? 'bg-gray-50 text-indigo-600' : 'hover:text-indigo-600 hover:bg-gray-50', 'group flex gap-2 p-2']"
                   >
-                    <div v-if="item.media" class="flex-none">
+                    <span v-if="item.media" class="flex-none">
                       <img :src="config.public.apiBase + item.media.sizes.thumb_24" :alt="item.name" class="w-4">
-                    </div>
+                    </span>
                     <span class="flex-1">{{ item.name }}</span>
                   </nuxt-link>
                 </li>

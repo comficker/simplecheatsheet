@@ -120,6 +120,9 @@ useHead({
           "ratingCount": "20"
         }
       })
+    },
+    {
+      src: 'https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js'
     }
   ]
 })
@@ -131,6 +134,10 @@ useSeoMeta({
   ogDescription: response.value?.instance.desc,
   ogImage: '/default.png',
   twitterCard: 'summary_large_image',
+})
+
+onMounted(() => {
+  new Masonry( '.masonry', {});
 })
 </script>
 
@@ -172,31 +179,35 @@ useSeoMeta({
     </div>
     <div v-if="sections.length" class="flex flex-col md:flex-row gap-6">
       <div
-        class="flex-1 grid gap-4"
-        :class="[hasChild ? '': `xl:grid-cols-${colum}`]"
+        class="flex-1 flex flex-wrap -mx-2 masonry"
       >
-        <div v-for="(posts, i) in section_posts" :key="i" class="scroll-50 space-y-3" :id="sections[i].id_string">
-          <h2 class="inline-flex font-bold py-1 p-2 bg-gradient-to-r from-indigo-50">{{ sections[i].name }}</h2>
-          <partial-card-sheet
-            v-if="sections[i].text"
-            class="mb-4"
-            :class="{'xl:max-w-2/5': hasChild}"
-            content-only :sheet="sections[i]"
-          />
-          <div
-            class="grid gap-4 grid-cols-1"
-            :class="[
+        <div
+          v-for="(posts, i) in section_posts" :key="i" class="p-2 masonry-item w-full"
+          :class="[hasChild ? '': `xl:w-1/${colum}`]"
+        >
+          <div class="scroll-50 space-y-3" :id="sections[i].id_string">
+            <h2 class="inline-flex font-bold py-1 p-2 bg-gradient-to-r from-indigo-50">{{ sections[i].name }}</h2>
+            <partial-card-sheet
+              v-if="sections[i].text"
+              class="mb-4"
+              :class="{'xl:max-w-2/5': hasChild}"
+              content-only :sheet="sections[i]"
+            />
+            <div
+              class="grid gap-4 grid-cols-1"
+              :class="[
               colum > 2 ? 'md:grid-cols-2': '',
               `xl:grid-cols-${sections[i].meta?.layout || colum}`
               ]"
-          >
-            <div class="w-full overflow-hidden" v-for="chunk in posts">
-              <partial-card-sheet class="mb-4" v-for="item in chunk" :key="item.id" :sheet="item"/>
+            >
+              <div class="w-full overflow-hidden" v-for="chunk in posts">
+                <partial-card-sheet class="mb-4" v-for="item in chunk" :key="item.id" :sheet="item"/>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="md:w-1/4 lg:w-1/5 bg-white space-y-4 py-4">
+      <div class="md:w-64 bg-white space-y-4 py-4">
         <div class="sticky top-32 right-0">
           <h4 class="text-base font-bold">Table of contents</h4>
           <ul class="divide-y divide-dashed space-y-2">
