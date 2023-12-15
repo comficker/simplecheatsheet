@@ -313,7 +313,6 @@ const handleUpdatePost = (index:number, value: Post) => {
                     <input
                       :id="`check-status-${item.id}`"
                       type="checkbox" :checked="!!item.db_status"
-                      :disabled="item.db_status === -1"
                       class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                       @input="item.db_status = item.db_status ? 0 : 1"
                     >
@@ -357,7 +356,6 @@ const handleUpdatePost = (index:number, value: Post) => {
                         <div class="flex items-center">
                           <input
                             type="checkbox" :checked="!!child.db_status"
-                            :disabled="child.db_status === -1"
                             class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                             @input="child.db_status = child.db_status ? 0 : 1"
                           >

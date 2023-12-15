@@ -75,5 +75,9 @@ const html = computed(() => {
 .sheet code::-webkit-scrollbar {
   display: none; /* Safari and Chrome */
 }
+
+.sheet ul {
+  @apply list-disc pl-4;
+}
 </style>
 

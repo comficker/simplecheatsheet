@@ -34,8 +34,8 @@ html {
   scroll-behavior: smooth;
 }
 
-.ck-content.ck-editor__editable {
-  border: 1px solid #EEE;
+.ck-content ul {
+  @apply list-disc pl-4;
 }
 
 .table.ck-widget {
