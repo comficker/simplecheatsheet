@@ -21,7 +21,7 @@ const {data: response} = await useAuthFetch<ResponsePost>(`/cs/posts/`, {
 })
 
 const colum = computed(() => response.value?.instance?.meta?.layout || 3)
-
+const hasChild = computed(() => !!response.value?.results.filter(x => !!x.parent).length)
 const sections = computed<Post[]>(() => {
   if (response.value) {
     return response.value.results.filter((x: Post) => !x.parent).sort((a, b) => {
@@ -171,12 +171,18 @@ useSeoMeta({
       </div>
     </div>
     <div v-if="sections.length" class="flex flex-col md:flex-row gap-6">
-      <div class="flex-1 space-y-6">
+      <div
+        class="flex-1 grid gap-4"
+        :class="[hasChild ? '': `xl:grid-cols-${colum}`]"
+      >
         <div v-for="(posts, i) in section_posts" :key="i" class="scroll-50 space-y-3" :id="sections[i].id_string">
-          <h2 class="inline-flex font-bold py-1 p-2 bg-gradient-to-r from-indigo-50">
-            {{ sections[i].name }}
-          </h2>
-          <partial-card-sheet v-if="sections[i].text" class="mb-4 xl:max-w-2/5" content-only :sheet="sections[i]"/>
+          <h2 class="inline-flex font-bold py-1 p-2 bg-gradient-to-r from-indigo-50">{{ sections[i].name }}</h2>
+          <partial-card-sheet
+            v-if="sections[i].text"
+            class="mb-4"
+            :class="{'xl:max-w-2/5': hasChild}"
+            content-only :sheet="sections[i]"
+          />
           <div
             class="grid gap-4 grid-cols-1"
             :class="[

@@ -28,7 +28,7 @@ const html = computed(() => {
 <style>
 .sheet {
   @apply overflow-auto p-3 border border-gray-100 bg-green-50/70 relative space-y-2;
-  border-radius: 4px;
+  border-radius: 2px;
 }
 
 .sheet .content {
@@ -53,7 +53,7 @@ const html = computed(() => {
 
 .sheet th,
 .sheet td {
-  @apply py-2 min-w-48;
+  @apply py-2 min-w-40;
 }
 
 .sheet th:not(:last-child),
