@@ -63,10 +63,11 @@ if (route.query.id) {
       }).map(x => ({...x, expanded: false}))
       post.expanded = false
     })
-    if (!response.value.instance.meta || !response.value.instance.meta.layout) {
+    if (!response.value.instance.meta || !response.value.instance.meta.layout || !response.value.instance.meta.sort) {
       form.value.meta = {
         ...response.value.instance.meta,
-        layout: 3
+        layout: response.value.instance.meta?.layout || 3,
+        sort: response.value.instance.meta?.sort || []
       }
     }
   }
@@ -141,14 +142,15 @@ function moveArray(arr: any[], fromIndex: number, toIndex: number) {
   arr.splice(toIndex, 0, element);
 }
 
-const move = (l: Post | null, from: number, is_up: boolean) => {
+const move = (post_index: number | null, from: number, is_up: boolean) => {
+  const l = post_index !== null ? posts.value[post_index] : null
   const arrLen = l ? l.children?.length || 0 : posts.value.length
   let to = is_up ? from - 1 : from + 1
 
   if (to < 0) to = arrLen - 1;
   if (to === arrLen) to = 0;
 
-  moveArray(l ? l.children || [] : posts.value, from, to)
+  moveArray(l ? (l.children || []) : posts.value, from, to)
 
   if (l) {
     l.meta = {
@@ -160,7 +162,7 @@ const move = (l: Post | null, from: number, is_up: boolean) => {
       ...form.value.meta,
       sort: posts.value.map(x => x.id)
     }
-    submit(undefined).then(console.log)
+    submit(undefined)
   }
 }
 
@@ -334,10 +336,10 @@ const handleUpdatePost = (index:number, value: Post) => {
                   >
                     <div class="group flex gap-2 items-center cursor-pointer">
                       <div class="flex flex-col border divide-y">
-                        <div class="p-0.5 hover:bg-gray-50" @click="move(item, j, true)">
+                        <div class="p-0.5 hover:bg-gray-50" @click="move(i, j, true)">
                           <div class="w-4 h-4 i-con-chevron-up"></div>
                         </div>
-                        <div class="p-0.5 hover:bg-gray-50" @click="move(item, j, false)">
+                        <div class="p-0.5 hover:bg-gray-50" @click="move(i, j, false)">
                           <div class="w-4 h-4 i-con-chevron-down"></div>
                         </div>
                       </div>
@@ -392,7 +394,7 @@ const handleUpdatePost = (index:number, value: Post) => {
         </div>
       </div>
     </div>
-    <div class="sticky bottom-0 py-3 bg-white mt-6 flex items-center justify-end gap-x-6">
+    <div class="sticky bottom-0 left-0 py-3 bg-white mt-6 flex items-center justify-end gap-x-6">
       <div class="flex items-center mr-auto">
         <input
           type="checkbox" :checked="!!form.db_status"

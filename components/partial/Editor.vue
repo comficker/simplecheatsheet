@@ -48,7 +48,7 @@ watch(() => post.expanded, (n) => {
         window.ck = editor
       })
       .catch((error: any) => {
-        console.error(error);
+
       });
   } else {
     if (window.ck) {
