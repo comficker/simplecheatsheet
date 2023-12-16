@@ -32,20 +32,7 @@ const sections = computed<Post[]>(() => {
   return []
 })
 
-function chunk(arr: any[], chunkSize: number) {
-  if (chunkSize <= 0) return []
-  const R: any[][] = [];
-  let i = 0;
-  arr.forEach(item => {
-    if (!R[i]) R[i] = [];
-    R[i].push(item)
-    if (i < chunkSize) i++;
-    if (i == chunkSize) i = 0;
-  })
-  return R;
-}
-
-const section_posts = computed<Post[][][]>(() => {
+const section_posts = computed<Post[][]>(() => {
   if (response.value) {
     return sections.value.map(x => {
       const posts = response.value?.results.filter((p: Post) => p.parent == x.id) || []
@@ -53,7 +40,7 @@ const section_posts = computed<Post[][][]>(() => {
         const s = x.meta?.sort || []
         return s.indexOf(a.id) - s.indexOf(b.id)
       })
-      return chunk(posts, 3)
+      return posts
     })
   }
   return []
@@ -137,7 +124,13 @@ useSeoMeta({
 })
 
 onMounted(() => {
-  new Masonry( '.masonry', {});
+  const elms = document.querySelectorAll('.masonry-sub')
+  for (let i = 0; i< elms.length;i++) {
+    console.log(elms[i]);
+    new Masonry( elms[i]);
+  }
+
+  new Masonry('.masonry');
 })
 </script>
 
@@ -188,15 +181,13 @@ onMounted(() => {
           <div class="scroll-50 space-y-3" :id="sections[i].id_string">
             <h2 class="inline-flex font-bold py-1 p-2 bg-gradient-to-r from-indigo-50">{{ sections[i].name }}</h2>
             <partial-card-sheet v-if="sections[i].text" content-only :sheet="sections[i]"/>
-            <div
-              class="grid gap-4 grid-cols-1"
-              :class="[
-              colum > 2 ? 'md:grid-cols-2': '',
-              `xl:grid-cols-${sections[i].meta?.layout || colum}`
-              ]"
-            >
-              <div class="w-full overflow-hidden" v-for="chunk in posts">
-                <partial-card-sheet class="mb-4" v-for="item in chunk" :key="item.id" :sheet="item"/>
+            <div class="flex flex-wrap -mx-2 masonry-sub">
+              <div
+                v-for="item in posts" :key="item.id"
+                class="p-2 masonry-item w-full"
+                :class="[colum > 2 ? 'w-1/2': '', `xl:w-1/${sections[i].meta?.layout || colum}`]"
+              >
+                <partial-card-sheet :sheet="item"/>
               </div>
             </div>
           </div>
