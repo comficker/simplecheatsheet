@@ -7,7 +7,7 @@ const route = useRoute()
 const us = useUserStore()
 const config = useRuntimeConfig()
 const params = computed(() => ({
-  page_size: 100,
+  page_size: 24,
   'taxonomies__id_string': route.params.id_string,
   db_status__in: us.topicStatus.join(",")
 }))
@@ -87,26 +87,38 @@ function capitalizeFirstLetter(string: string) {
         </div>
       </div>
     </div>
-    <div class="grid p-4 gap-4 grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-      <nuxt-link
-        v-for="item in response.results" :key="item.id_string"
-        :to="`/${item.id_string}`"
-        class="flex gap-3 shadow bg-white p-3"
-      >
-        <div v-if="item.media" class="flex-none">
-          <img
-            class="w-16"
-            :src="config.public.apiBase + item.media.sizes.thumb_128"
-            :alt="item.name"
-          >
-        </div>
-        <div class="flex-1">
-          <div class="text-base font-bold">{{ item.name }}</div>
-          <div class="line-clamp-3">
-            <div v-html="item.desc"></div>
+    <div class="md:flex flex-col md:flex-row md:divide-x divide-gray-100">
+      <div class="flex-1 grid p-4 gap-4 grid-cols-1 md:grid-cols-3 lg:grid-cols-4">
+        <nuxt-link
+          v-for="item in response.results" :key="item.id_string"
+          :to="`/${item.id_string}`"
+          class="flex gap-3 ring ring-gray-100 rounded bg-white p-3"
+        >
+          <div v-if="item.media" class="flex-none">
+            <img
+              class="w-16"
+              :src="config.public.apiBase + item.media.sizes.thumb_128"
+              :alt="item.name"
+            >
           </div>
+          <div class="flex-1">
+            <div class="text-base font-bold">{{ item.name }}</div>
+            <div class="line-clamp-3">
+              <div v-html="item.desc"></div>
+            </div>
+          </div>
+        </nuxt-link>
+      </div>
+      <div class="md:w-96 space-y-4 p-4">
+        <div class="ring ring-gray-100 rounded bg-white p-3 space-y-3">
+          <h3 class="font-medium">Leaderboard</h3>
+          <partial-leaderboard/>
         </div>
-      </nuxt-link>
+        <div class="ring ring-gray-100 rounded bg-white p-3 space-y-3">
+          <h3 class="font-medium">Activity</h3>
+          <partial-feed/>
+        </div>
+      </div>
     </div>
   </div>
 </template>

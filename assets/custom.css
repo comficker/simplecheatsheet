@@ -48,6 +48,5 @@ html {
 
 .masonry,
 .masonry-sub {
-  width: 100%;
-  overflow: hidden;
+  @apply md:w-full md:overflow-hidden;
 }

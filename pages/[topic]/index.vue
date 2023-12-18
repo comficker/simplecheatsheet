@@ -104,12 +104,14 @@ useSeoMeta({
 })
 
 const masonry = () => {
-  const elms = document.querySelectorAll('.masonry-sub')
-  for (let i = 0; i< elms.length;i++) {
-    new Masonry( elms[i]);
-  }
-  if (document.querySelector('.masonry')) {
-    new Masonry('.masonry');
+  if (window.innerWidth >= 728) {
+    const elms = document.querySelectorAll('.masonry-sub')
+    for (let i = 0; i< elms.length;i++) {
+      new Masonry( elms[i]);
+    }
+    if (document.querySelector('.masonry')) {
+      new Masonry('.masonry');
+    }
   }
 }
 
@@ -160,10 +162,10 @@ watch(() => [response.value?.instance.id, route.fullPath], () => {
     </div>
     <div v-if="sections.length" class="flex w-full flex-col md:flex-row gap-6">
       <div
-        class="flex-1 flex flex-wrap -mx-2 masonry"
+        class="flex-1 flex flex-wrap md:-mx-2 masonry"
       >
         <div
-          v-for="(posts, i) in section_posts" :key="i" class="p-2 masonry-item w-full"
+          v-for="(posts, i) in section_posts" :key="i" class="md:p-2 masonry-item w-full"
           :class="[hasChild ? '': `xl:w-1/${colum}`]"
         >
           <div class="scroll-50 space-y-3" :id="sections[i].id_string">
