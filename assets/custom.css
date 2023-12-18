@@ -45,3 +45,9 @@ html {
 .table.ck-widget table {
   table-layout: fixed;
 }
+
+.masonry,
+.masonry-sub {
+  width: 100%;
+  overflow: hidden;
+}

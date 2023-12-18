@@ -8,8 +8,8 @@ useHead({
 
 <template>
   <div>
+    <NuxtLoadingIndicator class="z-100"/>
     <NuxtLayout>
-      <NuxtLoadingIndicator/>
       <NuxtPage :page-key="route => route.fullPath"/>
     </NuxtLayout>
   </div>

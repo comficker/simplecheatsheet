@@ -123,15 +123,19 @@ useSeoMeta({
   twitterCard: 'summary_large_image',
 })
 
-onMounted(() => {
+const masonry = () => {
   const elms = document.querySelectorAll('.masonry-sub')
   for (let i = 0; i< elms.length;i++) {
-    console.log(elms[i]);
     new Masonry( elms[i]);
   }
-
   new Masonry('.masonry');
+}
+
+onMounted(() => {
+  masonry()
 })
+
+watch(() => route.fullPath, masonry)
 </script>
 
 <template>

@@ -1,4 +1,4 @@
-import {UseFetchOptions, useFetch} from '#app'
+import {type UseFetchOptions, useFetch} from '#app'
 import {defu} from 'defu'
 import useStatefulCookie from "~/composables/useStatefulCookie";
 
