@@ -103,7 +103,7 @@
       </div>
       <main class="relative z-1">
         <div class="sticky z-40 top-12 left-0 bg-white w-full border-b border-gray-100">
-          <div class="flex flex-nowrap items-center gap-3 font-medium">
+          <div class="flex flex-nowrap items-center gap-3 font-medium text-sm">
             <div class="max-w-44">
               <form class="relative bg-white p-4">
                 <label for="search-field" class="sr-only">Search</label>

@@ -1,3 +1,0 @@
-<template>
-  <partial-sheet/>
-</template>

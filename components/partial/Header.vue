@@ -30,24 +30,45 @@ const showMenu = ref(false)
 useClickOutSite(componentRef, () => {
   showMenu.value = false
 })
+
+useHead({
+  script: [
+    {
+      type: "application/ld+json",
+      innerHTML: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": pages.value.map(x => ({
+          "@type": "ListItem",
+          "position": 1,
+          "name": x.name,
+          "item": `https://simplecheatsheet.com${x.href}`
+        }))
+      })
+    },
+  ]
+})
+
 </script>
 <template>
   <div class="flex flex-1 gap-x-4 self-stretch justify-between">
     <nav class="flex" aria-label="Breadcrumb">
-      <ol role="list" class="flex items-center space-x-4">
-        <li>
-          <nuxt-link to="/" class="text-gray-400 hover:text-gray-500">
-            <HomeIcon class="h-5 w-5 flex-shrink-0" aria-hidden="true"/>
-            <span class="sr-only">Home</span>
-          </nuxt-link>
-        </li>
-        <li v-for="page in pages" :key="page.name">
-          <nuxt-link :to="page.href" class="flex items-center">
-            <ChevronRightIcon class="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true"/>
-            <span class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700">{{ page.name }}</span>
-          </nuxt-link>
-        </li>
-      </ol>
+      <client-only>
+        <ol role="list" class="flex items-center space-x-4">
+          <li>
+            <nuxt-link to="/" class="text-gray-400 hover:text-gray-500">
+              <HomeIcon class="h-5 w-5 flex-shrink-0" aria-hidden="true"/>
+              <span class="sr-only">Home</span>
+            </nuxt-link>
+          </li>
+          <li v-for="page in pages" :key="page.name">
+            <nuxt-link :to="page.href" class="flex items-center">
+              <ChevronRightIcon class="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true"/>
+              <span class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700">{{ page.name }}</span>
+            </nuxt-link>
+          </li>
+        </ol>
+      </client-only>
     </nav>
     <div class="flex items-center gap-x-4 lg:gap-x-6">
       <helper-status-select class="hidden md:block"/>

@@ -12,7 +12,8 @@ const params = computed(() => ({
   db_status__in: us.topicStatus.join(",")
 }))
 const {data: response} = await useAuthFetch<ResponsePost>(`/cs/posts/`, {
-  params: params
+  params: params,
+  key: route.params.topic.toString()
 }).catch(() => {
   throw createError({
     statusCode: 404,
@@ -46,11 +47,11 @@ const section_posts = computed<Post[][]>(() => {
   return []
 })
 
-us.setBC(response.value?.instance ? [{
-  name: response.value?.instance?.name,
+us.setBC([{
+  name: response.value?.instance?.name || '',
   current: true,
   href: `/${response.value?.instance?.id_string}`
-}] : [])
+}])
 
 useHead({
   title: `${response.value?.instance.name} Cheatsheets`,
@@ -71,27 +72,6 @@ useHead({
           "contactType": "customer support",
           "email": "comficker@gmail.com"
         }
-      })
-    },
-    {
-      type: "application/ld+json",
-      innerHTML: JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Home",
-            "item": "https://simplecheatsheet.com"
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": `${response.value?.instance.name} Cheatsheet`,
-            "item": `https://simplecheatsheet.com/${response.value?.instance?.id_string}`
-          }
-        ]
       })
     },
     {
@@ -128,14 +108,18 @@ const masonry = () => {
   for (let i = 0; i< elms.length;i++) {
     new Masonry( elms[i]);
   }
-  new Masonry('.masonry');
+  if (document.querySelector('.masonry')) {
+    new Masonry('.masonry');
+  }
 }
 
 onMounted(() => {
   masonry()
 })
 
-watch(() => route.fullPath, masonry)
+watch(() => [response.value?.instance.id, route.fullPath], () => {
+  masonry()
+})
 </script>
 
 <template>
@@ -174,7 +158,7 @@ watch(() => route.fullPath, masonry)
         </nuxt-link>
       </div>
     </div>
-    <div v-if="sections.length" class="flex flex-col md:flex-row gap-6">
+    <div v-if="sections.length" class="flex w-full flex-col md:flex-row gap-6">
       <div
         class="flex-1 flex flex-wrap -mx-2 masonry"
       >
@@ -183,15 +167,17 @@ watch(() => route.fullPath, masonry)
           :class="[hasChild ? '': `xl:w-1/${colum}`]"
         >
           <div class="scroll-50 space-y-3" :id="sections[i].id_string">
-            <h2 class="inline-flex font-bold py-1 p-2 bg-gradient-to-r from-indigo-50">{{ sections[i].name }}</h2>
-            <partial-card-sheet v-if="sections[i].text" content-only :sheet="sections[i]"/>
+            <h2 class="inline-flex font-bold py-1 p-2 bg-gradient-to-r from-indigo-50">
+              <nuxt-link :to="`/${response.instance.id_string}/${sections[i].id_string}`">{{ sections[i].name }}</nuxt-link>
+            </h2>
+            <partial-card-sheet v-if="sections[i].text" content-only :sheet="sections[i]" :topic="response.instance"/>
             <div class="flex flex-wrap -mx-2 masonry-sub">
               <div
                 v-for="item in posts" :key="item.id"
                 class="p-2 masonry-item w-full"
                 :class="[colum > 2 ? 'w-1/2': '', `xl:w-1/${sections[i].meta?.layout || colum}`]"
               >
-                <partial-card-sheet :sheet="item"/>
+                <partial-card-sheet :sheet="item" :topic="response.instance"/>
               </div>
             </div>
           </div>

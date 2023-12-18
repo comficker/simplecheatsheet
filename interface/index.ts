@@ -94,7 +94,7 @@ export interface Post {
   text: string
   parent: number
   contrib?: any
-  topic: number
+  topic: number | Topic
   user: number
   children?: Post[]
   expanded?: boolean

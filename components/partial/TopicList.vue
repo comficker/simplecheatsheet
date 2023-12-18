@@ -50,27 +50,6 @@ useHead({
           "email": "comficker@gmail.com"
         }
       })
-    },
-    {
-      type: "application/ld+json",
-      innerHTML: JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Home",
-            "item": "https://simplecheatsheet.com"
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": meta.value.title,
-            "item": `https://simplecheatsheet.com/category/${response.value?.instance?.id_string}`
-          }
-        ]
-      })
     }
   ]
 })
