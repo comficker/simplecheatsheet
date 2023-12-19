@@ -51,17 +51,17 @@ useHead({
 
 </script>
 <template>
-  <div class="flex flex-1 gap-x-4 self-stretch justify-between">
-    <nav class="flex" aria-label="Breadcrumb">
+  <div class="w-full flex flex-1 gap-x-4 self-stretch justify-between">
+    <nav class="flex-1 flex overflow-auto no-scrollbar" aria-label="Breadcrumb">
       <client-only>
-        <ol role="list" class="flex items-center space-x-4">
-          <li>
+        <ol role="list" class="flex items-center space-x-4 flex-nowrap">
+          <li class="flex-none">
             <nuxt-link to="/" class="text-gray-400 hover:text-gray-500">
               <HomeIcon class="h-5 w-5 flex-shrink-0" aria-hidden="true"/>
               <span class="sr-only">Home</span>
             </nuxt-link>
           </li>
-          <li v-for="page in pages" :key="page.name">
+          <li class="flex-none" v-for="page in pages" :key="page.name">
             <nuxt-link :to="page.href" class="flex items-center">
               <ChevronRightIcon class="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true"/>
               <span class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700">{{ page.name }}</span>
@@ -70,14 +70,14 @@ useHead({
         </ol>
       </client-only>
     </nav>
-    <div class="flex items-center gap-x-4 lg:gap-x-6">
+    <div class="flex-none flex items-center gap-x-4 lg:gap-x-6">
       <helper-status-select class="hidden md:block"/>
       <nuxt-link
         v-if="userStore.isLogged" to="/submit"
         class="flex gap-2 items-center p-2.5 text-gray-400 hover:text-gray-500"
       >
         <div class="h-6 w-6 i-con-plus"/>
-        <span>Submit</span>
+        <span class="hidden md:block">Submit</span>
       </nuxt-link>
       <div class="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-200" aria-hidden="true"/>
       <Menu as="div" class="relative">
