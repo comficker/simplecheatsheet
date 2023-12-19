@@ -8,7 +8,7 @@
     "url": "https://simplecheatsheet.com"
   },
   "scripts": {
-    "build": "nuxi build && yarn sentry:sourcemaps && yarn sentry:sourcemaps && yarn sentry:sourcemaps && yarn sentry:sourcemaps",
+    "build": "nuxi build",
     "dev": "nuxi dev --host 0.0.0.0",
     "dev:pwa": "VITE_PLUGIN_PWA=true nuxi dev --host 0.0.0.0",
     "start": "node .output/server/index.mjs",
