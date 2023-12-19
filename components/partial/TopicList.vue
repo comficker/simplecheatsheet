@@ -9,7 +9,7 @@ const config = useRuntimeConfig()
 const page = computed(() => route.query.page ? Number.parseInt(route.query.page.toString()) : 1)
 const params = computed(() => ({
   page: page.value,
-  page_size: 24,
+  page_size: 32,
   'taxonomies__id_string': route.params.id_string,
   db_status__in: us.topicStatus.join(",")
 }))

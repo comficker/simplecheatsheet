@@ -87,3 +87,6 @@ sw.*
 /pages/labeling/
 /pages/labeling/*
 /.output/
+
+# Sentry Config File
+.sentryclirc

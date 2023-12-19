@@ -8,14 +8,15 @@
     "url": "https://simplecheatsheet.com"
   },
   "scripts": {
-    "build": "nuxi build",
+    "build": "nuxi build && yarn sentry:sourcemaps",
     "dev": "nuxi dev --host 0.0.0.0",
     "dev:pwa": "VITE_PLUGIN_PWA=true nuxi dev --host 0.0.0.0",
     "start": "node .output/server/index.mjs",
     "lint": "eslint .",
     "postinstall": "nuxi prepare",
     "generate": "nuxi generate",
-    "start:generate": "npx serve .output/public"
+    "start:generate": "npx serve .output/public",
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org mine-c3 --project javascript-vue .output && sentry-cli sourcemaps upload --org mine-c3 --project javascript-vue .output"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.35.2",
@@ -36,6 +37,9 @@
     "@heroicons/vue": "^2.0.18",
     "@julr/unocss-preset-forms": "^0.1.0",
     "@nuxt/devtools": "latest",
+    "@sentry/cli": "^2.23.0",
+    "@sentry/integrations": "^7.88.0",
+    "@sentry/vue": "^7.88.0",
     "@vite-pwa/nuxt": "^0.1.2",
     "animated-unocss": "^0.0.4",
     "lodash": "^4.17.21",
