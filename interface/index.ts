@@ -18,7 +18,8 @@ export interface User {
       current?: string,
       editor?: string
     }
-  }
+  },
+  avatar: string
 }
 
 export interface Comment {

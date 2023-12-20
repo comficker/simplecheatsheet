@@ -54,7 +54,7 @@ us.setBC([{
 }])
 
 useHead({
-  title: `${response.value?.instance.name} Cheatsheets`,
+  title: `${response.value?.instance.name} Cheat sheet`,
   meta: [
     {name: 'description', content: response.value?.instance.desc}
   ],
@@ -79,7 +79,7 @@ useHead({
       innerHTML: JSON.stringify({
         "@context": "https://schema.org/",
         "@type": "Book",
-        "name": `${response.value?.instance.name} Cheatsheet`,
+        "name": `${response.value?.instance.name} cheat sheet`,
         "aggregateRating": {
           "@type": "AggregateRating",
           "ratingValue": "88",
@@ -95,8 +95,8 @@ useHead({
 })
 
 useSeoMeta({
-  title: `${response.value?.instance.name} Cheatsheet`,
-  ogTitle: `${response.value?.instance.name} Cheatsheet`,
+  title: `${response.value?.instance.name} cheat sheet`,
+  ogTitle: `${response.value?.instance.name} cheat sheet`,
   description: response.value?.instance.desc,
   ogDescription: response.value?.instance.desc,
   ogImage: '/default.png',
@@ -119,9 +119,7 @@ onMounted(() => {
   masonry()
 })
 
-watch(() => [response.value?.instance.id, route.fullPath], () => {
-  masonry()
-})
+
 </script>
 
 <template>
@@ -138,7 +136,7 @@ watch(() => [response.value?.instance.id, route.fullPath], () => {
               >
             </div>
             <div class="flex-1">
-              <h1 class="font-semibold text-2xl md:text-4xl">{{ response.instance.name }} CheatSheets</h1>
+              <h1 class="font-semibold text-2xl md:text-4xl">{{ response.instance.name }} Cheat Sheet</h1>
               <p>{{ response.instance.desc }}</p>
               <div class="flex flex-wrap -mx-0.5">
                 <div v-for="item in response.instance.taxonomies" :key="item.id" class="p-1">
@@ -169,7 +167,7 @@ watch(() => [response.value?.instance.id, route.fullPath], () => {
           :class="[hasChild ? '': `xl:w-1/${colum}`]"
         >
           <div class="scroll-50 space-y-3" :id="sections[i].id_string">
-            <h2 class="inline-flex font-bold py-1 p-2 bg-gradient-to-r from-indigo-50">
+            <h2 class="inline-flex font-bold py-0 rounded p-2 bg-gradient-to-r from-indigo-50">
               <nuxt-link :to="`/${response.instance.id_string}/${sections[i].id_string}`">{{ sections[i].name }}</nuxt-link>
             </h2>
             <partial-card-sheet v-if="sections[i].text" content-only :sheet="sections[i]" :topic="response.instance"/>

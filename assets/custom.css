@@ -50,3 +50,7 @@ html {
 .masonry-sub {
   @apply md:w-full md:overflow-hidden;
 }
+
+main {
+  min-height: calc(100vh - 48px);
+}

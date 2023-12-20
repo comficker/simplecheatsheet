@@ -6,22 +6,28 @@ import {BellIcon} from "@heroicons/vue/24/outline";
 import {ChevronDownIcon, ChevronRightIcon, HomeIcon} from "@heroicons/vue/20/solid";
 
 const {$logout} = useNuxtApp()
+const config = useRuntimeConfig()
 const route = useRoute()
+const router = useRouter()
 const userStore = useUserStore()
 const pages = computed(() => userStore.breadcrumbs)
 const user = computed(() => {
   return userStore.isLogged ? {
     full_name: userStore.logged.first_name ? `${userStore.logged.first_name} ${userStore.logged.last_name}` : userStore.logged.username,
-    username: userStore.logged.username
+    username: userStore.logged.username,
+    avatar: userStore.logged.avatar ? config.public.apiBase + userStore.logged.avatar : '/favicon.png'
   } : {
     full_name: "Guess",
-    username: "Guess"
+    username: "Guess",
+    avatar: '/favicon.png'
   }
 })
 
 const userNavigation = [
-  {name: 'Your profile', href: '#'},
-  {name: 'Sign out', href: '#'},
+  {logged: true, name: 'Your profile', func: () => router.replace(`/profile/${user.value.username}`)},
+  {logged: true, name: 'Sign out', func: () => $logout()},
+  {logged: false, name: 'Login', func: () => router.replace('/hello')},
+  {logged: false, name: 'Register', func: () => router.replace('/hello#register')},
 ]
 
 const componentRef = ref()
@@ -85,7 +91,7 @@ useHead({
           <span class="sr-only">Open user menu</span>
           <img
             class="h-8 w-8 rounded-full bg-gray-50"
-            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+            :src="user.avatar"
             alt=""
           />
           <span
@@ -106,11 +112,12 @@ useHead({
           leave-from-class="transform opacity-100 scale-100"
           leave-to-class="transform opacity-0 scale-95">
           <MenuItems
-            class="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
-            <MenuItem v-for="item in userNavigation" :key="item.name" v-slot="{ active }">
+            class="absolute right-0 z-10 mt-2.5 w-48 origin-top-right rounded bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none">
+            <MenuItem v-for="item in userNavigation.filter(x => x.logged == userStore.isLogged)" :key="item.name"
+                      v-slot="{ active }">
               <a
-                :href="item.href"
-                :class="[active ? 'bg-gray-50' : '', 'block px-3 py-1 text-sm leading-6 text-gray-900']">
+                @click="item.func"
+                :class="[active ? 'bg-gray-50' : '', 'cursor-pointer block px-3 py-1 text-sm leading-6 text-gray-900']">
                 {{ item.name }}
               </a>
             </MenuItem>

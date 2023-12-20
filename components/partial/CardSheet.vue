@@ -20,7 +20,7 @@ const html = computed(() => {
   <div class="sheet no-scrollbar">
     <h4
       v-if="!contentOnly"
-      class="inline-flex p-0.5 pl-2 pr-16 rounded font-medium text-sm uppercase text-white bg-gradient-to-r from-purple-500"
+      class="inline-flex pl-2 pr-16 rounded font-medium text-sm uppercase text-white bg-gradient-to-r from-purple-500"
     >
       <nuxt-link :to="`/${topic.id_string}/${sheet.id_string}`">
         {{ sheet.name}}
