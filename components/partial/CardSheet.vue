@@ -53,12 +53,12 @@ const html = computed(() => {
 }
 
 .sheet th {
-  @apply capitalize;
+  @apply capitalize text-xs;
 }
 
 .sheet th,
 .sheet td {
-  @apply py-2 min-w-40;
+  @apply py-1 min-w-40;
 }
 
 .sheet th:not(:last-child),
