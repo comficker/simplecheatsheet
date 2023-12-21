@@ -32,7 +32,7 @@ const html = computed(() => {
 
 <style>
 .sheet {
-  @apply overflow-auto p-3 border border-gray-100 bg-green-50/70 relative space-y-2;
+  @apply overflow-auto p-3 border border-gray-100 relative space-y-2;
   border-radius: 2px;
 }
 
