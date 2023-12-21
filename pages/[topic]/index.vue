@@ -150,7 +150,7 @@ onMounted(() => {
           </div>
         </div>
       </div>
-      <div v-if="us.isLogged" class="absolute right-6 top-6">
+      <div v-if="us.isLogged" class="absolute right-4 top-4">
         <nuxt-link
           :to="`/submit?id=${response.instance.id_string}`"
           class="block cursor-pointer p-2 border border-gray-100 rounded">
