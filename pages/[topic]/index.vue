@@ -125,7 +125,7 @@ onMounted(() => {
 <template>
   <div class="px-4 space-y-4">
     <div class="relative">
-      <div class="inline-flex lg:max-w-1/2">
+      <div class="inline-flex xl:max-w-1/2">
         <div class="-ml-4 p-4 bg-gradient-to-r from-indigo-50">
           <div class="flex-col md:flex-row flex gap-4">
             <div v-if="response.instance.media" class="flex-none">

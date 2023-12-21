@@ -67,7 +67,7 @@ const html = computed(() => {
 }
 
 .sheet code {
-  @apply inline-flex rounded bg-gray-100 p-1 my-0.5 px-2 border overflow-auto no-scrollbar font-mono text-xs;
+  @apply inline-flex rounded bg-gray-100 p-0.5 my-0.5 px-2 border overflow-auto no-scrollbar font-mono text-xs;
 
   -ms-overflow-style: none; /* Internet Explorer 10+ */
   scrollbar-width: none; /* Firefox */
